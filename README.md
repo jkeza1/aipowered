@@ -9,11 +9,32 @@ A sophisticated AI-powered application system for government documents.
 - **Secure Processing**: Automated verification workflows for government services.
 
 ## Project Structure
-- `adminsection/`: Admin panel and backend management.
-- `citizensection/`: User-facing application portal.
-- `backendcodes/`: Core logic and database connection files.
-- `database/`: SQL scripts for database initialization.
-- `systemimages/`: Storage for sample documents for AI comparison.
+
+```text
+/
+├── adminsection/                      # Admin Panel and management
+│   ├── criminalrecord/                # Document storage
+│   ├── drivingreplacement/            # Document storage
+│   ├── goodconduct/                   # Document storage
+│   ├── nationalid/                    # Document storage
+│   ├── passports/                     # Document storage
+│   ├── sectionincludes/               # Internal admin components
+│   └── ...
+├── citizensection/                    # Citizen portal
+├── backendcodes/                      # Business logic & db connection
+├── css/                               # Global stylesheets
+├── database/                          # SQLite/SQL database files
+├── js/                                # Global JavaScript
+├── lib/                               # External libraries
+├── scss/                              # SASS source files
+├── sectioncodes/                      # Application step logic
+├── index.php                          # Landing page
+├── login.php                          # User authentication
+├── signup.php                         # User registration
+├── adminlogin.php                     # Admin authentication
+├── userdashboard.php                  # User portal
+└── ...
+```
 
 ## Technologies Used
 - **PHP**
