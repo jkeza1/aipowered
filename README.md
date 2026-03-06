@@ -69,9 +69,7 @@ Watch the core functionalities (AI Document Analysis, Admin Review, and Automate
 
 You can access the live version or download the package here:
 
-<<<<<<< HEAD
-**[🔗 Deployment Link](https://aipowered.gamer.gd/login.php )**
-
+**[🔗 Deployment Link](https://www.infinityfree.com/)**
 
 ---
 
@@ -147,95 +145,3 @@ The system is designed for high availability and easy reproduction:
 
 ## License
 Created for Irembo AI-POWERED Service.
-
----
-
-## API Usage Examples
-
-### Verify Document (FastAPI)
-
-**Endpoint:** `POST /verify`
-
-**Request Example:**
-
-```json
-{
-  "image_path": "samples_documents/sample_id.jpg"
-}
-```
-
-**Response Example:**
-
-```json
-{
-  "result": "authentic",
-  "confidence": 0.92,
-  "details": {
-    "ela_score": 0.03,
-    "metadata": {"photoshop": false},
-    "ocr_text": "RWANDA NATIONAL ID..."
-  }
-}
-```
-
----
-
-## Contributing Guidelines
-
-1. Fork the repository and create your branch from `main`.
-2. Ensure code is well-documented and tested.
-3. Submit a pull request with a clear description of your changes.
-4. For major changes, open an issue first to discuss what you would like to change.
-
----
-
-## Testing Instructions
-
-### Python
-
-1. Ensure all dependencies are installed (`pip install -r requirements.txt`).
-2. Run unit tests:
-   ```bash
-   python test_app.py
-   ```
-
-### PHP
-
-1. Install Composer dependencies (if using PHPUnit):
-   ```bash
-   php composer.phar install
-   ```
-2. Run PHPUnit tests:
-   ```bash
-   vendor/bin/phpunit AllPhpFilesTest.php
-   ```
-
----
-
-## Troubleshooting / FAQ
-
-**Q: FastAPI server not running?**
-A: Start the server with `uvicorn app:app --reload` and ensure port 8001 is open.
-
-**Q: Database connection errors?**
-A: Check your credentials in `backendcodes/connection.php` and ensure the database is imported.
-
-**Q: PHP errors on Windows?**
-A: Ensure PHP is added to your PATH and all required extensions are enabled.
-
-**Q: Model not loading?**
-A: Verify model weights exist in the `output/` directory and paths are correct in `app.py`.
-
----
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
-
----
-
-## Contact / Support
-
-- For issues, open a GitHub issue or email: support@irembo.gov.rw
-- For feature requests, use the issue tracker.
-- For security concerns, contact the project maintainer directly.
