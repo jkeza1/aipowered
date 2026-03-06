@@ -63,7 +63,6 @@ Watch the core functionalities (AI Document Analysis, Admin Review, and Automate
 
 You can access the live version or download the package here:
 
-**[🔗 Repo Deployment Link](https://github.com/jkeza1/aipowered)**
 **[🔗 Deployment Link](https://www.infinityfree.com/)**
 
 ---
