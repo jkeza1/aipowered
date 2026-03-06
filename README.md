@@ -45,7 +45,6 @@ A sophisticated AI-powered application system for government documents.
 ## Technologies Used
 - **PHP**
 - **MySQL**
-- **OpenAI API (GPT-4 Vision)**
 - **PHPMailer**
 - **Bootstrap & SweetAlert**
 
