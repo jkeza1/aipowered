@@ -19,6 +19,8 @@ A sophisticated AI-powered application system for government documents.
 │   ├── nationalid/                    # Document storage
 │   ├── passports/                     # Document storage
 │   ├── sectionincludes/               # Internal admin components
+│   ├── systemimages/                  # Main system images
+│   │   └── testing_screenshots/       # UI/Test Screenshots for documentation
 │   └── ...
 ├── citizensection/                    # Citizen portal
 ├── backendcodes/                      # Business logic & db connection
