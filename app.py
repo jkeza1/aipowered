@@ -37,14 +37,14 @@ PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "http://127.0.0.1:8001")
 def check_citizen_record(national_id):
     """Verifies the National ID against the citizenregister table."""
     try:
+        print(f"[DEBUG] Querying citizenregister for national_id: {national_id}")
         conn = mysql.connector.connect(**DB_CONFIG)
         cursor = conn.cursor(dictionary=True)
-        
         # We query the citizenregister table which you use for official records
         query = "SELECT full_name, national_id FROM citizenregister WHERE national_id = %s"
         cursor.execute(query, (national_id,))
         record = cursor.fetchone()
-        
+        print(f"[DEBUG] Query result: {record}")
         cursor.close()
         conn.close()
         return record
@@ -285,18 +285,20 @@ def run_ocr_forensics(image_np, expected_name, expected_id, expected_type):
         # Match ID (Strip everything except numbers)
         clean_expected_id = re.sub(r'[^0-9]', '', str(expected_id))
         clean_ocr_numbers = re.sub(r'[^0-9]', '', clean_text)
-        
+        print(f"[DEBUG] clean_expected_id: {clean_expected_id}")
+        print(f"[DEBUG] clean_ocr_numbers: {clean_ocr_numbers}")
         # ID is usually more unique, so we check for its presence
         id_match = clean_expected_id in clean_ocr_numbers if expected_id else False
-        
+        print(f"[DEBUG] id_match: {id_match}")
         # 5. INTEGRATED DATABASE VERIFICATION
         db_match = False
         db_name = "Not Found"
         if id_match:
-             citizen = check_citizen_record(clean_expected_id)
-             if citizen:
-                 db_match = True
-                 db_name = citizen['full_name']
+            citizen = check_citizen_record(clean_expected_id)
+            print(f"[DEBUG] citizen DB lookup: {citizen}")
+            if citizen:
+                db_match = True
+                db_name = citizen['full_name']
         
         # Determine Final Authenticity
         # Condition: OCR Success (Name/ID) AND verified in Citizen DB

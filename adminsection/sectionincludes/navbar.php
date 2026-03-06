@@ -38,16 +38,16 @@ $serviceTypeLabels = [
 
         <small class="text-uppercase text-muted fw-bold mt-4 mb-2 d-block" style="font-size: 0.65rem; letter-spacing: 1px;"><?php echo __('admin_service_management'); ?></small>
         <ul class="nav flex-column gap-1">
-            <li class="nav-item"><a href="nationalidinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-address-card me-3 text-info" style="width: 20px;"></i> <?php echo __('svc_replace_nid'); ?></a></li>
-            <li class="nav-item"><a href="drivinglicenseinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-id-card me-3 text-success" style="width: 20px;"></i> <?php echo __('svc_definitive'); ?></a></li>
-            <li class="nav-item"><a href="passportinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-passport me-3 text-primary" style="width: 20px;"></i> <?php echo __('svc_passport'); ?></a></li>
-            <li class="nav-item"><a href="marriagecertificateinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-ring me-3 text-warning" style="width: 20px;"></i> <?php echo __('svc_marriage'); ?></a></li>
-            <li class="nav-item"><a href="criminalrecordinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-file-invoice me-3 text-danger" style="width: 20px;"></i> <?php echo __('svc_criminal_record'); ?></a></li>
-            <li class="nav-item"><a href="goodconductinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-check-circle me-3 text-success" style="width: 20px;"></i> <?php echo __('svc_good_conduct'); ?></a></li>
+            <li class="nav-item"><a href="nationalidinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><?php echo __('svc_replace_nid'); ?></a></li>
+            <li class="nav-item"><a href="drivinglicenseinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><?php echo __('svc_definitive'); ?></a></li>
+            <li class="nav-item"><a href="passportinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><?php echo __('svc_passport'); ?></a></li>
+            <li class="nav-item"><a href="marriagecertificateinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><?php echo __('svc_marriage'); ?></a></li>
+            <li class="nav-item"><a href="criminalrecordinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><?php echo __('svc_criminal_record'); ?></a></li>
+            <li class="nav-item"><a href="goodconductinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><?php echo __('svc_good_conduct'); ?></a></li>
             
-            <li class="nav-item"><a href="servicemanagement.php?type=notarialact" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-stamp me-3 text-warning" style="width: 20px;"></i> <?php echo $serviceTypeLabels['notarialact']; ?></a></li>
-            <li class="nav-item"><a href="servicemanagement.php?type=bankstatement" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-university me-3 text-primary" style="width: 20px;"></i> <?php echo $serviceTypeLabels['bankstatement']; ?></a></li>
-            <li class="nav-item"><a href="servicemanagement.php?type=academictranscript" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-graduation-cap me-3 text-info" style="width: 20px;"></i> <?php echo $serviceTypeLabels['academictranscript']; ?></a></li>
+            <li class="nav-item"><a href="servicemanagement.php?type=notarialact" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><?php echo $serviceTypeLabels['notarialact']; ?></a></li>
+            <li class="nav-item"><a href="servicemanagement.php?type=bankstatement" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><?php echo $serviceTypeLabels['bankstatement']; ?></a></li>
+            <li class="nav-item"><a href="servicemanagement.php?type=academictranscript" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><?php echo $serviceTypeLabels['academictranscript']; ?></a></li>
             
             <li class="nav-item">
                 <a class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark dropdown-toggle" href="#" data-toggle="collapse" data-target="#moreServicesMenu" aria-expanded="false">
@@ -95,7 +95,7 @@ $serviceTypeLabels = [
 </style>
 
 <button class="btn menu-toggle text-white d-flex align-items-center px-4 py-2 shadow" onclick="toggleSidebar()" style="background: #0063CF; border-radius: 0 25px 25px 0; position: fixed; left: 0; top: 20px; z-index: 1000;">
-    <i class="fa fa-bars me-2"></i> <?php echo $row['name'] ?? __('admin_menu'); ?>
+    <i class="fa fa-bars me-2"></i> 
 </button>
 
 <!-- Admin Language Selector (separate from citizen language) -->

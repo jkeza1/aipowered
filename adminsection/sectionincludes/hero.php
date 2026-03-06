@@ -111,35 +111,35 @@ $appealCount = mysqli_num_rows($activeAppeals);
                         <div class="metrics-grid">
                             <div class="metric-chip metric-primary">
                                 <div class="metric-topline">
-                                    <span class="metric-icon"><i class="fas fa-list-check"></i></span>
+                                    
                                     <span class="metric-label"><?php echo __('admin_total_tasks'); ?></span>
                                 </div>
                                 <div class="metric-value"><?= $totalPending; ?></div>
                             </div>
                             <div class="metric-chip">
                                 <div class="metric-topline">
-                                    <span class="metric-icon"><i class="fas fa-folder-open"></i></span>
+                                    
                                     <span class="metric-label">Document Types</span>
                                 </div>
                                 <div class="metric-value"><?= $documentTypeCount; ?></div>
                             </div>
                             <div class="metric-chip metric-danger-soft">
                                 <div class="metric-topline">
-                                    <span class="metric-icon"><i class="fas fa-bell"></i></span>
+                                   
                                     <span class="metric-label"><?php echo __('admin_citizens_appeals'); ?></span>
                                 </div>
                                 <div class="metric-value"><?= $appealCount; ?></div>
                             </div>
                             <a href="allapplications.php?status=approved" class="metric-chip metric-success-soft metric-link" title="View approved documents">
                                 <div class="metric-topline">
-                                    <span class="metric-icon"><i class="fas fa-check-circle"></i></span>
+                            
                                     <span class="metric-label">Approved</span>
                                 </div>
                                 <div class="metric-value"><?= $totalApproved; ?></div>
                             </a>
                             <a href="allapplications.php?status=declined" class="metric-chip metric-warning-soft metric-link" title="View declined documents">
                                 <div class="metric-topline">
-                                    <span class="metric-icon"><i class="fas fa-times-circle"></i></span>
+                              
                                     <span class="metric-label">Declined</span>
                                 </div>
                                 <div class="metric-value"><?= $totalDeclined; ?></div>
