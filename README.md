@@ -43,6 +43,24 @@ A sophisticated AI-powered application system for government documents.
 - **PHPMailer**
 - **Bootstrap & SweetAlert**
 
+---
+
+## 📺 Application Demo
+
+Watch the core functionalities (AI Document Analysis, Admin Review, and Automated Notifications) in action:
+
+**[▶️ Watch Demo Video](https://docs.google.com/document/d/1ZH63LAsbENIrNdMmY5VXc9SJJqYJXJRiL5peh4s9BQg/edit?usp=sharing)**
+
+---
+
+## 🌐 Deployed Version / Download
+
+You can access the live version or download the package here:
+
+**[🔗 Repo Deployment Link](https://github.com/jkeza1/aipowered)**
+
+---
+
 ## Installation
 1. Clone the repository to your local server (e.g., XAMPP htdocs).
 2. Import the database from `database/iremboaipowered.sql`.
