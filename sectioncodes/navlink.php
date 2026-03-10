@@ -1,4 +1,8 @@
 <head>
+<?php 
+include_once 'backendcodes/sessionstart.php';
+include_once 'backendcodes/language.php'; 
+?>
 <meta charset="utf-8">
 <title>AI-POWERED DOCUMENT VERIFICATION</title>
 <meta content="width=device-width, initial-scale=1.0" name="viewport">

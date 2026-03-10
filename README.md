@@ -98,7 +98,7 @@ The application has been rigorously tested using multiple strategies and data po
 #### 🖼️ Functional Demos & Screenshots
 | Admin Dashboard Overview | AI Analysis in Progress |
 | :---: | :---: |
-| ![Admin Panel](adminsection/systemimages/testing_screenshots/dashboard.png) | ![AI Loading](adminsection/systemimages/testing_screenshots/ai_processing.png) |
+| ![Admin Panel](aipowered/testing_screenshots/dashboard.png) | ![AI Loading](aipowered/testing_screenshots/AI processing.png) |
 
 - **Functional Testing**: All core modules (ID, Passport, Driving License) were tested with valid and invalid data to ensure robust data validation and error handling.
 - **AI Document Verification**: The forensic model was tested across three specifications:

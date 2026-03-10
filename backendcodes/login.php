@@ -45,7 +45,7 @@ if(isset($_POST['login'])){
              'Welcome back!',
              'success')
         .then(() => {
-            window.location.href='userdashboard.php';
+            window.location.href='index.php';
         });
         </script>";
 

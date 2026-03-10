@@ -2,100 +2,11 @@
 
 
 /* ================================
-   OPENAI CONFIG
-================================ */
-$apiKey = "YOUR_OPENAI_API_KEY";
-
-/* ================================
    SAFE ID GENERATOR
 ================================ */
 function safe_id($type, $id){
     $cleanType = preg_replace('/[^a-zA-Z0-9]/', '', $type);
     return $cleanType . $id;
-}
-
-/* ================================
-   AI COMPARISON FUNCTION
-================================ */
-function compare_with_sample($userImagePath, $docType, $conn, $apiKey) {
-
-    $docColumnMap = [
-        'National ID' => 'nationalid',
-        'Driving License' => 'drivinglicense',
-        'Passport' => 'passport',
-        'Marriage Certificate' => 'marriagecertificate',
-        'Good Conduct' => 'goodconduct',
-        'Provisional License' => 'provisionaldriving'
-    ];
-
-    if(!isset($docColumnMap[$docType])) {
-        return "No official sample configured for this document type.";
-    }
-
-    $column = $docColumnMap[$docType];
-
-    $sampleQuery = mysqli_query($conn, "SELECT $column FROM systeminfo LIMIT 1");
-    if(mysqli_num_rows($sampleQuery) == 0){
-        return "Official sample not found.";
-    }
-
-    $sampleRow = mysqli_fetch_assoc($sampleQuery);
-    $sampleImagePath = $sampleRow[$column];
-
-    if(empty($sampleImagePath) || !file_exists($sampleImagePath)){
-        return "Official sample image missing.";
-    }
-
-    if(!file_exists($userImagePath)){
-        return "User image not found.";
-    }
-
-    $userImageData = base64_encode(file_get_contents($userImagePath));
-    $sampleImageData = base64_encode(file_get_contents($sampleImagePath));
-
-    $prompt = "Compare the second image (user submitted document) with the first image (official government sample). 
-    Check if layout, format, seals, fonts and structure match. 
-    Detect differences, missing elements or possible tampering.
-    Give a clear verification result.";
-
-    $postData = [
-        "model" => "gpt-4.1-mini",
-        "messages" => [
-            [
-                "role" => "user",
-                "content" => [
-                    [
-                        "type" => "input_image",
-                        "image_data" => $sampleImageData
-                    ],
-                    [
-                        "type" => "input_image",
-                        "image_data" => $userImageData
-                    ],
-                    [
-                        "type" => "text",
-                        "text" => $prompt
-                    ]
-                ]
-            ]
-        ]
-    ];
-
-    $ch = curl_init("https://api.openai.com/v1/chat/completions");
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        "Authorization: Bearer $apiKey",
-        "Content-Type: application/json"
-    ]);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData));
-
-    $response = curl_exec($ch);
-    curl_close($ch);
-
-    $result = json_decode($response, true);
-
-    return $result['choices'][0]['message']['content'] ?? "AI analysis unavailable.";
 }
 
 /* ================================
@@ -209,19 +120,6 @@ Review
 
 <tr class="review-form-row" id="form-<?php echo $formId; ?>" style="display:none;">
 <td colspan="7">
-
-<?php
-$analysis = "";
-if(!empty($row['file1'])){
-    $userImagePath = $folder . $row['file1'];
-    $analysis = compare_with_sample($userImagePath, $row['type'], $conn, $apiKey);
-}
-?>
-
-<div class="alert alert-info">
-<strong>AI Document Comparison Result:</strong><br>
-<?php echo nl2br(htmlspecialchars($analysis)); ?>
-</div>
 
 <form method="POST">
 <input type="hidden" name="app_id" value="<?php echo $row['id']; ?>">

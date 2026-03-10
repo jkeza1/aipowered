@@ -6,6 +6,7 @@ if(isset($_POST['register'])){
 
     include 'connection.php';
 
+    $full_name = mysqli_real_escape_string($conn, $_POST['full_name']);
     $phone = mysqli_real_escape_string($conn, $_POST['phone']);
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = $_POST['password'];
@@ -41,8 +42,8 @@ if(isset($_POST['register'])){
 
     // Insert user
     mysqli_query($conn, 
-        "INSERT INTO users (phone,email,password,account_type)
-         VALUES ('$phone','$email','$hashed_password','Both')");
+        "INSERT INTO users (full_name,phone,email,password,account_type)
+         VALUES ('$full_name','$phone','$email','$hashed_password','Both')");
 
 
 

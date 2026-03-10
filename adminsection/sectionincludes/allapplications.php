@@ -39,7 +39,6 @@
 if(isset($_POST['ai_compare'])){
 
     $apiKey = ""; // your OpenAI API key
-
     $image = $_POST['image'];
     $type  = $_POST['type'];
 
@@ -48,6 +47,7 @@ if(isset($_POST['ai_compare'])){
 
     $columnMap = [
         'National ID' => 'nationalid',
+        'Criminal Record' => 'criminalrecord',
         'Driving License' => 'drivinglicense',
         'Driving Replacement' => 'drivinglicense',
         'Passport' => 'passport',
@@ -80,19 +80,7 @@ if(isset($_POST['ai_compare'])){
     $userImage   = base64_encode(file_get_contents($image));
     $sampleImage = base64_encode(file_get_contents($sampleImagePath));
 
-    $data = [
-        "model" => "gpt-4.1-mini",
-        "input" => [[
-            "role" => "user",
-            "content" => [
-                ["type"=>"input_text","text"=>"Compare these two government documents and detect forgery. Check layout, stamps, fonts. Provide score 0-100 and VALID or SUSPICIOUS."],
-                ["type"=>"input_image","image_url"=>"data:".$mime.";base64,".$sampleImage],
-                ["type"=>"input_image","image_url"=>"data:".$mime.";base64,".$userImage]
-            ]
-        ]]
-    ];
-
-    $ch = curl_init("https://api.openai.com/v1/responses");
+    $ch = curl_init("https://api.openai.com/v1/chat/completions");
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_HTTPHEADER => [
@@ -100,7 +88,32 @@ if(isset($_POST['ai_compare'])){
             "Content-Type: application/json"
         ],
         CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => json_encode($data)
+        CURLOPT_POSTFIELDS => json_encode([
+            "model" => "gpt-4.1-mini",
+            "messages" => [
+                [
+                    "role" => "user",
+                    "content" => [
+                        [
+                            "type" => "text",
+                            "text" => "Compare these two government documents and detect forgery. Check layout, stamps, fonts. Provide score 0-100 and VALID or SUSPICIOUS."
+                        ],
+                        [
+                            "type" => "image_url",
+                            "image_url" => [
+                                "url" => "data:".$mime.";base64,".$sampleImage
+                            ]
+                        ],
+                        [
+                            "type" => "image_url",
+                            "image_url" => [
+                                "url" => "data:".$mime.";base64,".$userImage
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ])
     ]);
 
     $response = curl_exec($ch);
@@ -109,11 +122,8 @@ if(isset($_POST['ai_compare'])){
     $result = json_decode($response,true);
 
     echo "<div class='alert alert-info'>";
-    if(!empty($result['output_text'])){
-        echo nl2br($result['output_text']);
-    }
-    elseif(isset($result['output'][0]['content'][0]['text'])){
-        echo nl2br($result['output'][0]['content'][0]['text']);
+    if(!empty($result['choices'][0]['message']['content'])){
+        echo nl2br($result['choices'][0]['message']['content']);
     } else {
         echo "<pre>";
         print_r($result);

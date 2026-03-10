@@ -578,6 +578,7 @@ INSERT INTO `systeminfo` (`id`, `name`, `termsofuse`, `privacypolicy`, `aboutsys
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
+  `full_name` varchar(255) DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `email` varchar(150) DEFAULT NULL,
   `password` varchar(255) NOT NULL,

@@ -18,6 +18,16 @@
 
 <form method="POST">
 
+    <!-- Full Name Field -->
+    <div class="mb-3">
+        <label class="form-label">Full Name *</label>
+        <input type="text"
+               name="full_name"
+               class="form-control"
+               placeholder="Enter your full name"
+               required>
+    </div>
+
     <!-- Phone Field -->
     <div class="mb-3">
         <label class="form-label">Phone Number *</label>
