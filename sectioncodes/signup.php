@@ -28,6 +28,37 @@
                required>
     </div>
 
+    <!-- Gender Field -->
+    <div class="mb-3">
+        <label class="form-label">Gender *</label>
+        <select name="gender" class="form-control" required>
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select>
+    </div>
+
+    <!-- Date of Birth Field -->
+    <div class="mb-3">
+        <label class="form-label">Date of Birth *</label>
+        <input type="date"
+               name="dob"
+               class="form-control"
+               required>
+    </div>
+
+    <!-- National ID Field -->
+    <div class="mb-3">
+        <label class="form-label">National ID (16 digits) *</label>
+        <input type="text"
+               name="national_id"
+               class="form-control"
+               placeholder="Enter your 16-digit National ID"
+               pattern="[0-9]{16}"
+               title="National ID must be exactly 16 digits"
+               required>
+    </div>
+
     <!-- Phone Field -->
     <div class="mb-3">
         <label class="form-label">Phone Number *</label>
