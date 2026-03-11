@@ -304,7 +304,7 @@ $allApplications = mysqli_query($conn, "
 SELECT id, service_name, application_date, status,
 attachment as file1, NULL as file2,
 'Criminal Record' as type, full_name, national_id
-FROM applicationcriminalrecord
+FROM applicationcriminalrecord 
 UNION ALL
 SELECT id, service_name, application_date, status,
 NULL,NULL,'Driving License', full_name, national_id
@@ -422,6 +422,7 @@ if($status=='pending') echo "<span class='text-warning fw-bold'>Pending</span>";
 elseif($status=='approved') echo "<span class='text-success fw-bold'>Approved</span>";
 elseif($status=='rejected') echo "<span class='text-danger fw-bold'>Rejected</span>";
 elseif($status=='denied') echo "<span class='text-dark fw-bold'>Denied</span>";
+elseif($status=='cancelled') echo "<span class='text-dark fw-bold'>Cancelled</span>";
 ?>
 </td>
 <td>
@@ -443,26 +444,45 @@ if($folder!="" && !empty($row['file1'])){
 <div class="d-flex flex-row gap-2 align-items-center justify-content-start" style="min-width: 320px;">
     <?php if($folder!="" && !empty($row['file1']) && $status != 'approved'): ?>
     <!-- AI FORENSICS CARD (SIDE BY SIDE) -->
+
+                                            <?php
+$status = strtolower($row['status']);
+if($status!='cancelled')
+{
+?>
     <div class="ai-button-wrapper position-relative overflow-hidden shadow-sm flex-grow-1" 
          style="border-radius: 8px; cursor: pointer; transition: all 0.2s ease-in-out; border: 1px solid #e0e0e0; max-width: 160px; height: 45px; background: #fff;"
          onmouseover="this.style.borderColor='#0056b3'; this.style.backgroundColor='#f8fbff';"
          onmouseout="this.style.borderColor='#e0e0e0'; this.style.backgroundColor='#fff';"
          onclick="this.querySelector('.ai-btn').click()">
-        <button class='ai-btn p-0 border-0 bg-transparent w-100 h-100 d-flex align-items-center justify-content-between px-3' 
+        
+
+         <button class='ai-btn p-0 border-0 bg-transparent w-100 h-100 d-flex align-items-center justify-content-between px-3' 
                 style="outline: none;"
                 data-img='<?= $folder.$row['file1']; ?>' 
                 data-type='<?= $row['type']; ?>'
                 data-name='<?= htmlspecialchars($row['full_name']); ?>'
                 data-id='<?= htmlspecialchars($row['national_id']); ?>'>
+
             <div class="text-start">
+
                 <div style="color: #333; font-weight: 500; font-size: 0.75rem; line-height: 1.2;">AI Forensics</div>
+
                 <div class="text-muted" style="font-size: 0.6rem;">Deep Analysis</div>
+
             </div>
+
             <div class="text-primary" style="font-size: 0.8rem;">
                 
             </div>
         </button>
+
+  
+
     </div>
+                                              <?php
+}
+                ?>
     <?php elseif($status == 'approved'): ?>
     <!-- VERIFIED BADGE (SIDE BY SIDE) -->
     <div class="d-flex align-items-center justify-content-center p-2 rounded-3 border border-success-subtle bg-success-subtle shadow-sm flex-grow-1" 
@@ -545,6 +565,11 @@ if(!empty($value) && preg_match('/\.(jpg|jpeg|png|gif)$/i',$value)){
 </div>
 <?php endif; ?>
 
+<?php
+$status = strtolower($row['status']);
+if($status!='cancelled')
+{
+?>
 <form method="POST">
 <input type="hidden" name="app_id" value="<?= $row['id']; ?>">
 <input type="hidden" name="app_type" value="<?= $row['type']; ?>">
@@ -558,7 +583,9 @@ if(!empty($value) && preg_match('/\.(jpg|jpeg|png|gif)$/i',$value)){
 <button type="submit" name="update_status" class="btn btn-dark" onclick="this.form.new_status.value='Denied'">Deny</button>
 <button type="button" class="btn btn-secondary close-form-btn">Close</button>
 </form>
-
+<?php
+}
+?>
 </td>
 </tr>
 

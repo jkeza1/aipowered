@@ -201,7 +201,7 @@ ORDER BY application_date DESC
     <div class="row align-items-start position-relative">
         <!-- Sidebar -->
         <div class="col-md-3">
-            <div class="d-none d-md-block" style="position: sticky; top: 154px; height: calc(100vh - 154px); overflow-y: auto; z-index: 1000;">
+            <div class="d-none d-md-block" style="position: fixed; top: 100px; width: inherit; max-width: 280px; height: calc(100vh - 120px); overflow-y: auto; z-index: 1020; margin-top:140px;">
                 <div class="nav flex-column nav-pills shadow-sm p-3 bg-white rounded border mb-4" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                     <button class="nav-link active text-start mb-2 py-3 px-4" id="v-pills-apps-tab" data-bs-toggle="pill" data-bs-target="#v-pills-apps" type="button" role="tab" style="transition: none;">
                         <i class="fa fa-list-alt me-3 text-primary"></i> <?php echo __('my_applications'); ?>
