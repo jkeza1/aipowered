@@ -91,6 +91,11 @@ if(isset($_POST['send_reminder_message'])){
         $citizen_email = $row_user['email'];
         $citizen_phone = $row_user['phone'];
 
+        // Save to Database Table
+        $save_sql = "INSERT INTO application_appeals (application_id, application_type, citizen_email, citizen_phone, message) 
+                     VALUES ($app_id, '$app_type', '$citizen_email', '$citizen_phone', '$message')";
+        mysqli_query($conn, $save_sql);
+
         require 'backendcodes/PHPMailer/src/PHPMailer.php';
         require 'backendcodes/PHPMailer/src/SMTP.php';
         require 'backendcodes/PHPMailer/src/Exception.php';

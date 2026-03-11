@@ -56,10 +56,11 @@ if(isset($_SESSION['user_id'])){
                         </a>
                     </li>
                 <?php else: ?>
-                    <!-- Logged In State: Display Email Directly -->
+                    <!-- Logged In State: Display Full Name Directly -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-white d-flex align-items-center fw-bold" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span><?php echo htmlspecialchars($_SESSION['email'] ?? $user_info['email'] ?? 'User'); ?></span>
+                            <i class="fa fa-user-circle me-2"></i>
+                            <span><?php echo htmlspecialchars($user_info['full_name'] ?? $_SESSION['email'] ?? 'User'); ?></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="accountDropdown">
                             <?php 

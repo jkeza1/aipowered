@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.staticfiles import StaticFiles
 import tensorflow as tf
 import numpy as np
@@ -87,9 +87,11 @@ def run_ocr_forensics(image_np, expected_name, expected_id, expected_type):
         # 3. Document Type Classification
         doc_type_detected = "unknown"
         keywords = {
-            "nationalid": ["republic of rwanda", "national id", "indangamuntu"],
-            "passport": ["passport", "republic of rwanda", "p rwa"],
-            "drivinglicense": ["driving license", "conduit", "republique du rwanda"]
+            "nationalid": ["republic of rwanda", "national id", "indangamuntu", "identite", "identity"],
+            "passport": ["passport", "republic of rwanda", "p rwa", "passeport"],
+            "drivinglicense": ["driving license", "conduit", "republique du rwanda", "permis"],
+            "criminalrecord": ["criminal record", "extrait du casier", "republic of rwanda"],
+            "goodconduct": ["good conduct", "certificate of good", "conduct"]
         }
         
         for doc_key, kws in keywords.items():
@@ -97,7 +99,9 @@ def run_ocr_forensics(image_np, expected_name, expected_id, expected_type):
                 doc_type_detected = doc_key
                 break
                 
-        type_match = (doc_type_detected == expected_type) if expected_type else True
+        # Normalize expected_type from PHP for comparison
+        norm_expected = str(expected_type).lower().replace(" ", "") if expected_type else ""
+        type_match = (doc_type_detected == norm_expected) if norm_expected else True
         
         # 4. Strict Database Matching (NLP)
         name_score = 0
@@ -173,8 +177,24 @@ async def verify_document(
 
         # Logic for Overall Verdict
         is_type_valid = ocr_res.get('type_match', True)
-        is_authentic = tamp_score > 0.5 and is_type_valid
+        is_identity_valid = ocr_res.get('is_authentic', False)
         
+        # Authentic if:
+        # 1. ML model says > 0.5 (Not tampered)
+        # 2. Document type matches application
+        # 3. OCR details match applicant (Name and ID)
+        is_authentic = (tamp_score > 0.5) and is_type_valid and is_identity_valid
+        
+        # Prepare explanation based on failures
+        if is_authentic:
+            explanation = "Document verified successfully. Forensic integrity and identity match confirmed."
+        else:
+            reasons = []
+            if tamp_score <= 0.5: reasons.append("Potential digital tampering detected")
+            if not is_type_valid: reasons.append(f"Document type mismatch (Expected: {expected_type}, Detected: {ocr_res['doc_type_detected']})")
+            if not is_identity_valid: reasons.append("Identity mismatch: Name or ID does not match applicant records")
+            explanation = "Verification failed: " + ", ".join(reasons)
+
         return {
             "success": True,
             "status": "Authentic" if is_authentic else "Suspicious",
@@ -182,12 +202,66 @@ async def verify_document(
             "digital_integrity": round(tamp_score * 100, 2),
             "ocr_forensics": ocr_res,
             "heatmap_url": f"http://127.0.0.1:8001/static/heatmaps/{result_filename}",
-            "explanation": "High forensic integrity" if is_authentic else "Verification failed: Check document type or tampering heatmap."
+            "explanation": explanation
         }
         
 
     except Exception as e:
         return {"success": False, "error": str(e)}
+
+# --- NEW TRAINING ENDPOINT ---
+@app.post("/train")
+async def train_model(document_type: str = Form(...)):
+    """
+    Fine-tunes the model using verified documents from the admin's storage.
+    Example: document_type='nationalid' will train on 'adminsection/nationalid/'
+    """
+    try:
+        # Map types to folder paths
+        folder_map = {
+            "nationalid": "adminsection/nationalid/",
+            "passport": "adminsection/passports/",
+            "drivinglicense": "adminsection/drivinglicense/",
+            "criminalrecord": "adminsection/criminalrecord/",
+            "goodconduct": "adminsection/goodconduct/"
+        }
+        
+        data_dir = folder_map.get(document_type.lower())
+        if not data_dir or not os.path.exists(data_dir):
+            return {"success": False, "error": f"Data directory for {document_type} not found."}
+
+        # Load images from the verified folder
+        images = []
+        for filename in os.listdir(data_dir):
+            if filename.endswith(('.jpg', '.jpeg', '.png')):
+                img_path = os.path.join(data_dir, filename)
+                img = Image.open(img_path).convert('RGB').resize(IMG_SIZE)
+                images.append(np.array(img))
+
+        if len(images) < 2:
+            return {"success": False, "error": "Not enough verified documents to start training (minimum 2 required)."}
+
+        X_train = np.array(images) / 255.0
+        # Since these are 'verified' authentic documents, label them as 1
+        y_train = np.ones((len(X_train), 1)) 
+
+        # Perform 3 epochs of Transfer Learning (Fine-Tuning)
+        model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001), 
+                      loss='binary_crossentropy', metrics=['accuracy'])
+        
+        model.fit(X_train, y_train, epochs=3, batch_size=4, verbose=0)
+        
+        # Save updated weights
+        model.save_weights(MODEL_PATH)
+        
+        return {
+            "success": True, 
+            "message": f"Model successfully fine-tuned on {len(images)} {document_type} documents.",
+            "updated_at": str(os.path.getmtime(MODEL_PATH))
+        }
+
+    except Exception as e:
+        return {"success": False, "error": f"Training failed: {str(e)}"}
 
 if __name__ == "__main__":
     import uvicorn
