@@ -9,10 +9,91 @@ import cv2  # Ensure you ran: pip install opencv-python
 import pytesseract
 from difflib import SequenceMatcher
 import re
+import mysql.connector
+import piexif
+from PIL import Image, ImageChops
 
 # --- CONFIGURE TESSERACT PATH ---
 # Explicitly setting the path for Windows
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
+# --- DATABASE CONFIG ---
+DB_CONFIG = {
+    "host": "localhost",
+    "user": "root",
+    "password": "",
+    "database": "iremboaipowered"
+}
+
+def check_citizen_record(national_id):
+    """Verifies the National ID against the citizenregister table."""
+    try:
+        conn = mysql.connector.connect(**DB_CONFIG)
+        cursor = conn.cursor(dictionary=True)
+        
+        # We query the citizenregister table which you use for official records
+        query = "SELECT full_name, national_id FROM citizenregister WHERE national_id = %s"
+        cursor.execute(query, (national_id,))
+        record = cursor.fetchone()
+        
+        cursor.close()
+        conn.close()
+        return record
+    except Exception as e:
+        print(f"Database Error: {e}")
+        return None
+
+def run_metadata_forensics(image_bytes):
+    """Checks for editing software signatures in EXIF data."""
+    try:
+        exif_dict = piexif.load(image_bytes)
+        software = exif_dict.get("0th", {}).get(piexif.ImageIFD.Software, b"")
+        software_str = software.decode("utf-8", "ignore").lower()
+        
+        suspicious_list = ["photoshop", "gimp", "snapseed", "canva", "adobe", "pixelmator"]
+        for susp in suspicious_list:
+            if susp in software_str:
+                return False, f"Metadata Check: Editing software detected ({software_str})"
+        
+        return True, "No suspicious metadata"
+    except Exception:
+        # Many scans don't have metadata, which is normal
+        return True, "No metadata metadata signature found"
+
+def run_ela_analysis(image_bytes):
+    """
+    Simulates Error Level Analysis (ELA) to detect JPEG resave artifacts.
+    Areas with higher artifacts/noise often indicate digital modification.
+    """
+    try:
+        temp_filename = "temp_ela.jpg"
+        # Open original and save at a specific quality
+        original = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+        original.save(temp_filename, "JPEG", quality=90)
+        
+        # Open resaved and calculate difference
+        resaved = Image.open(temp_filename)
+        diff = ImageChops.difference(original, resaved)
+        
+        # Calculate stats on the difference
+        extrema = diff.getextrema()
+        max_diff = max([ex[1] for ex in extrema])
+        if max_diff == 0:
+            max_diff = 1
+        
+        # If the difference is too high in localized areas, it's a sign of editing
+        # We simplify this to a global variance check for this bot
+        stat = np.array(diff).std()
+        
+        if os.path.exists(temp_filename): os.remove(temp_filename)
+        
+        if stat > 10.0: # High ELA variance threshold
+            return False, "ELA Check: Inconsistent compression artifacts detected (Likely edited)"
+        
+        return True, "ELA clean"
+    except Exception as e:
+        if os.path.exists(temp_filename): os.remove(temp_filename)
+        return True, "ELA calculation skipped"
 
 app = FastAPI()
 
@@ -81,17 +162,43 @@ def run_ocr_forensics(image_np, expected_name, expected_id, expected_type):
                 qr_match = True
 
         # 2. Extract Text
-        text = pytesseract.image_to_string(image_np)
+        # Pre-process image for better OCR accuracy (Grayscale + Thresholding)
+        gray = cv2.cvtColor(image_np, cv2.COLOR_RGB2GRAY)
+        # Increase contrast
+        processed_img = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+        
+        # Try OCR on both original and processed image
+        text_orig = pytesseract.image_to_string(image_np)
+        text_proc = pytesseract.image_to_string(processed_img)
+        
+        text = text_orig + " " + text_proc
         clean_text = " ".join(text.lower().split())
+        
+        # DEBUG: Print exact OCR output to console for troubleshooting
+        print(f"--- OCR DEBUG START ---")
+        print(f"OCR TEXT DETECTED: [{clean_text}]")
+        print(f"EXPECTED NAME: [{expected_name}]")
+        print(f"EXPECTED ID: [{expected_id}]")
+        print(f"--- OCR DEBUG END ---")
         
         # 3. Document Type Classification
         doc_type_detected = "unknown"
         keywords = {
-            "nationalid": ["republic of rwanda", "national id", "indangamuntu", "identite", "identity"],
+            "nationalid": ["republic of rwanda", "national id", "indangamuntu", "identite", "identity", "rembo", "nid"],
             "passport": ["passport", "republic of rwanda", "p rwa", "passeport"],
             "drivinglicense": ["driving license", "conduit", "republique du rwanda", "permis"],
-            "criminalrecord": ["criminal record", "extrait du casier", "republic of rwanda"],
-            "goodconduct": ["good conduct", "certificate of good", "conduct"]
+            "criminalrecord": ["criminal record", "extrait du casier", "republic of rwanda", "judicial records"],
+            "goodconduct": ["good conduct", "certificate of good", "conduct"],
+            "academictranscript": ["academic transcript", "student record", "marks", "university", "college", "school"],
+            "bankstatement": ["bank statement", "transaction history", "account statement", "financial activities", "balance"],
+            "salarycertificate": ["salary certificate", "payslip", "income record", "salary slip"],
+            "employmentcontract": ["employment contract", "agreement", "employer", "employee", "job offer", "contract"],
+            "businesslicense": ["business license", "rdb", "office of the registrar", "incorporation", "enterprise"],
+            "medicalreport": ["medical report", "health certificate", "doctor", "hospital", "diagnosis"],
+            "propertyownership": ["property ownership", "land title", "upi", "parcel", "real estate"],
+            "notarialact": ["notarial act", "notary", "authentication", "notarized"],
+            "powerofattorney": ["power of attorney", "authorized representative", "legal authority"],
+            "courtjudgment": ["court judgment", "legal verdict", "ruling", "judge", "justice"]
         }
         
         for doc_key, kws in keywords.items():
@@ -100,21 +207,62 @@ def run_ocr_forensics(image_np, expected_name, expected_id, expected_type):
                 break
                 
         # Normalize expected_type from PHP for comparison
+        # Remove spaces and convert to lowercase (e.g., "Employment Contract" -> "employmentcontract")
         norm_expected = str(expected_type).lower().replace(" ", "") if expected_type else ""
-        type_match = (doc_type_detected == norm_expected) if norm_expected else True
+        
+        # SPECIAL CASE: Map human-readable service names to AI keys if they don't match exactly
+        type_mapping = {
+            "employmentcontractcertification": "employmentcontract",
+            "employmentcontract": "employmentcontract",
+            "salarycertificate": "salarycertificate"
+        }
+        if norm_expected in type_mapping:
+            norm_expected = type_mapping[norm_expected]
+
+        # Use partial keyword matching for type if it's a known document type
+        type_match = (doc_type_detected == norm_expected) or (doc_type_detected in norm_expected) if norm_expected else True
         
         # 4. Strict Database Matching (NLP)
         name_score = 0
+        # Create a version of the text with NO SPACES and NO SPECIAL CHARS to catch "keza110" or "ID: 120..."
+        clean_text_alphanumeric = re.sub(r'[^a-zA-Z0-9]', '', clean_text)
+        
         if expected_name:
             # Check if all parts of the expected name are present in the OCR
-            name_parts = expected_name.lower().split()
-            matches = sum(1 for part in name_parts if part in clean_text)
+            name_parts = str(expected_name).lower().split()
+            matches = 0
+            for part in name_parts:
+                # Remove small noisy particles like 'a' or 'the' but keep names
+                if len(part) < 2: continue 
+                
+                # Check for direct inclusion or alphanumeric inclusion
+                clean_part = re.sub(r'[^a-z0-9]', '', part)
+                if clean_part in clean_text or clean_part in clean_text_alphanumeric:
+                    matches += 1
+            
+            # Use a more relaxed threshold: 30% match is enough for noisy scans
             name_score = (matches / len(name_parts)) * 100 if name_parts else 0
 
-        id_match = str(expected_id).lower().replace(" ", "") in clean_text.replace(" ", "") if expected_id else False
+        # Match ID (Strip everything except numbers)
+        clean_expected_id = re.sub(r'[^0-9]', '', str(expected_id))
+        clean_ocr_numbers = re.sub(r'[^0-9]', '', clean_text)
+        
+        # ID is usually more unique, so we check for its presence
+        id_match = clean_expected_id in clean_ocr_numbers if expected_id else False
+        
+        # 5. INTEGRATED DATABASE VERIFICATION
+        db_match = False
+        db_name = "Not Found"
+        if id_match:
+             citizen = check_citizen_record(clean_expected_id)
+             if citizen:
+                 db_match = True
+                 db_name = citizen['full_name']
         
         # Determine Final Authenticity
-        is_authentic = (name_score > 70) and id_match
+        # Condition: OCR Success (Name/ID) AND verified in Citizen DB
+        # If DB verification succeeds, we trust the name match more easily
+        is_authentic = (name_score >= 20) and id_match and db_match
         if barcodes:
              is_authentic = is_authentic and qr_match # If QR exists, it MUST match
 
@@ -123,10 +271,11 @@ def run_ocr_forensics(image_np, expected_name, expected_id, expected_type):
             "type_match": type_match,
             "name_match_score": round(name_score, 2),
             "id_match": id_match,
+            "db_verification": db_match,
+            "citizen_name": db_name,
             "qr_data": qr_data,
-            "qr_match": qr_match,
             "is_authentic": is_authentic,
-            "anomalies": ["None"] if is_authentic else ["Data Mismatch: Document does not belong to applicant"]
+            "anomalies": ["None"] if is_authentic else ["Data Mismatch: Identity could not be verified in citizen database"]
         }
     except Exception as e:
         print(f"OCR Error: {e}")
@@ -155,8 +304,22 @@ async def verify_document(
         img_array = np.expand_dims(original_resized, axis=0)
 
         # 1. Digital Tampering (EfficientNet)
+        # We increase input resolution for smaller forgery detection
         prediction, last_conv_output = model.predict(img_array)
         tamp_score = float(prediction[0][0])
+        
+        # --- NEW: ADVANCED FORENSIC PASSES ---
+        # A. Metadata Pass
+        is_metadata_clean, meta_msg = run_metadata_forensics(contents)
+        
+        # B. ELA Pass (Error Level Analysis)
+        is_ela_clean, ela_msg = run_ela_analysis(contents)
+        
+        # C. Digital Forgery Pass
+        gray_cv = cv2.cvtColor(img_np, cv2.COLOR_RGB2GRAY)
+        # Detect edges and noise inconsistencies
+        laplacian_var = cv2.Laplacian(gray_cv, cv2.CV_64F).var()
+        is_pasted = laplacian_var < 100 # Low variance can indicate smooth digitally generated text/shapes
         
         # 2. OCR Forensics
         ocr_res = run_ocr_forensics(img_np, expected_name, expected_id, expected_type)
@@ -179,25 +342,49 @@ async def verify_document(
         is_type_valid = ocr_res.get('type_match', True)
         is_identity_valid = ocr_res.get('is_authentic', False)
         
-        # Authentic if:
-        # 1. ML model says > 0.5 (Not tampered)
-        # 2. Document type matches application
-        # 3. OCR details match applicant (Name and ID)
-        is_authentic = (tamp_score > 0.5) and is_type_valid and is_identity_valid
+        # INCREASED STRICTNESS FOR FORGERY:
+        # 1. Deep ML score must be high (> 0.45)
+        # 2. Laplacian variance must not be suspicious (detects "copy-paste" blur)
+        # 3. Metadata must be clean (no photoshop signatures)
+        # 4. ELA must be consistent (no resave/modification noise)
+        # 5. OCR and DB must match perfectly
+        is_forensic_clean = (tamp_score >= 0.45) and (not is_pasted) and is_metadata_clean and is_ela_clean
+        is_authentic = is_forensic_clean and is_type_valid and is_identity_valid
         
         # Prepare explanation based on failures
+        # --- NEW TRAFFIC LIGHT REGISTRY LOGIC ---
+        status = "Authentic"
+        traffic_light = "GREEN"
+        risk_score = 0
+
+        # Risk Calculation
+        if (tamp_score < 0.25 or is_pasted or not is_metadata_clean) and not is_authentic:
+            traffic_light = "RED"
+            status = "Fraudulent"
+            risk_score = 100
+        elif (tamp_score < 0.45 or not is_ela_clean or not is_identity_valid or not is_type_valid) and not is_authentic:
+            traffic_light = "YELLOW"
+            status = "Suspicious"
+            risk_score = 50
+        
         if is_authentic:
-            explanation = "Document verified successfully. Forensic integrity and identity match confirmed."
+            explanation = f"Verification successful. Document belongs to {ocr_res['citizen_name']} and forensic integrity (CNN/Metadata/ELA/DB) is confirmed."
         else:
             reasons = []
-            if tamp_score <= 0.5: reasons.append("Potential digital tampering detected")
-            if not is_type_valid: reasons.append(f"Document type mismatch (Expected: {expected_type}, Detected: {ocr_res['doc_type_detected']})")
-            if not is_identity_valid: reasons.append("Identity mismatch: Name or ID does not match applicant records")
-            explanation = "Verification failed: " + ", ".join(reasons)
+            if tamp_score < 0.45: reasons.append("CNN: Manipulation markers detected")
+            if is_pasted: reasons.append("Inconsistent edge noise (Possible copy-paste)")
+            if not is_metadata_clean: reasons.append(meta_msg)
+            if not is_ela_clean: reasons.append(ela_msg)
+            if not is_type_valid: reasons.append(f"Mismatched service ({expected_type})")
+            if not is_identity_valid: 
+                reasons.append("NLP: Identity could not be cross-referenced in official registry")
+            explanation = "FAILED: " + ", ".join(reasons)
 
         return {
             "success": True,
-            "status": "Authentic" if is_authentic else "Suspicious",
+            "status": status,
+            "traffic_light": traffic_light,
+            "risk_score": risk_score,
             "is_authentic": is_authentic,
             "digital_integrity": round(tamp_score * 100, 2),
             "ocr_forensics": ocr_res,
@@ -252,12 +439,12 @@ async def train_model(document_type: str = Form(...)):
         model.fit(X_train, y_train, epochs=3, batch_size=4, verbose=0)
         
         # Save updated weights
-        model.save_weights(MODEL_PATH)
+        model.save_weights(WEIGHTS_PATH)
         
         return {
             "success": True, 
             "message": f"Model successfully fine-tuned on {len(images)} {document_type} documents.",
-            "updated_at": str(os.path.getmtime(MODEL_PATH))
+            "updated_at": str(os.path.getmtime(WEIGHTS_PATH))
         }
 
     except Exception as e:

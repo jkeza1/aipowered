@@ -6,11 +6,14 @@ if(isset($_SESSION['user_id'])){
     $res = mysqli_query($conn, "SELECT * FROM users WHERE id=$uid LIMIT 1");
     if($res && mysqli_num_rows($res) > 0){
         $user_info = mysqli_fetch_assoc($res);
-        // Ensure email is always available in session if logged in
-        if(!isset($_SESSION['email'])) {
-            $_SESSION['email'] = $user_info['email'];
-        }
-    } else {
+                        // Ensure email and phone are always available in session if logged in
+                        if(!isset($_SESSION['email'])) {
+                            $_SESSION['email'] = $user_info['email'];
+                        }
+                        if(!isset($_SESSION['phone'])) {
+                            $_SESSION['phone'] = $user_info['phone'];
+                        }
+                    } else {
         // Clear session if user not found
         unset($_SESSION['user_id']);
         session_destroy();

@@ -32,8 +32,8 @@ $row = mysqli_fetch_assoc($result);
 
         <!-- Apply Button -->
         <button class="btn btn-primary mt-3"
-                data-toggle="modal"
-                data-target="#applyDrivingReplacementModal">
+                data-bs-toggle="modal"
+                data-bs-target="#applyDrivingReplacementModal">
             Apply Now
         </button>
 

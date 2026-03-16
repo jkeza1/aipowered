@@ -32,6 +32,7 @@
 
 
 <?php
+include 'service_mappings.php';
 
 /* -----------------------------
    AI DOCUMENT COMPARISON
@@ -41,24 +42,44 @@ if(isset($_POST['ai_compare'])){
     $imagePath = $_POST['image'];
     $type  = $_POST['type'];
 
-    if(!file_exists($imagePath)){
-        echo "<div class='alert alert-danger'>Document file not found at $imagePath</div>";
-        exit();
-    }
-
-    // Map application types to the backend's expected types
-    $typeMapping = [
-        'National ID' => 'nationalid',
-        'Criminal Record' => 'criminalrecord',
-        'Driving License' => 'drivinglicense',
-        'Driving Replacement' => 'drivinglicense',
-        'Passport' => 'passport',
-        'Marriage Certificate' => 'marriagecertificate',
-        'Good Conduct' => 'goodconduct',
-        'Provisional License' => 'drivinglicense'
+    // Possible absolute paths
+    $workspaceRoot = realpath(__DIR__ . '/../../'); // /xampp/htdocs/aipowered/
+    $adminsectionRoot = realpath(__DIR__ . '/../');  // /xampp/htdocs/aipowered/adminsection/
+    
+    // Normalize path by removing duplicate 'adminsection/' or 'salaryslip/' etc prefixes if they exist at the start of $imagePath
+    // This handles cases where $folder already contains 'adminsection/' and $imagePath is passed with it again.
+    $cleanImagePath = ltrim($imagePath, '/\\');
+    
+    $possiblePaths = [
+        $cleanImagePath,
+        $adminsectionRoot . '/' . $cleanImagePath,
+        $workspaceRoot . '/' . $cleanImagePath,
+        $workspaceRoot . '/adminsection/' . $cleanImagePath,
+        // Also check if the path is already absolute (unlikely from POST but safe)
+        $imagePath
     ];
 
-    $expectedType = isset($typeMapping[$type]) ? $typeMapping[$type] : 'unknown';
+    $foundPath = null;
+    foreach($possiblePaths as $path){
+        if(!empty($path) && file_exists($path)){
+            $foundPath = realpath($path);
+            break;
+        }
+    }
+
+    if(!$foundPath){
+        // Provide more debugging info if file not found
+        echo "<div class='alert alert-danger font-monospace' style='font-size: 0.8rem;'>
+                <strong>Document Not Found!</strong><br>
+                Post Data: " . htmlspecialchars($imagePath) . "<br>
+                Looked in:<br>
+                - " . implode("<br>- ", $possiblePaths) . "
+              </div>";
+        exit();
+    }
+    $imagePath = $foundPath;
+
+    $expectedType = isset($service_mappings[$type]) ? $service_mappings[$type]['ai_type'] : 'unknown';
     $expectedName = $_POST['expected_name'] ?? '';
     $expectedId = $_POST['expected_id'] ?? '';
 
@@ -199,21 +220,9 @@ if(isset($_POST['update_status'])){
     $new_status = $_POST['new_status'];
     $reason = mysqli_real_escape_string($conn, $_POST['reason']);
 
-    $table_map = [
-        'Criminal Record' => 'applicationcriminalrecord',
-        'Driving License' => 'applicationdrivinglicense',
-        'Driving Replacement' => 'applicationdrivingreplacement',
-        'Good Conduct' => 'applicationgoodconduct',
-        'Marriage Certificate' => 'applicationmarriagecertificate',
-        'National ID' => 'applicationnationalid',
-        'Passport' => 'applicationpassport',
-        'Passport Replacement' => 'applicationpassportreplacement',
-        'Provisional License' => 'applicationprovisionallicense'
-    ];
+    if(array_key_exists($app_type, $service_mappings)){
 
-    if(array_key_exists($app_type, $table_map)){
-
-        $table = $table_map[$app_type];
+        $table = $service_mappings[$app_type]['table'];
 
         // Fetch applicant details
         $res = mysqli_query($conn, "SELECT * FROM $table WHERE id=$app_id");
@@ -340,6 +349,66 @@ UNION ALL
 SELECT id, service_name, application_date, status,
 NULL,NULL,'Provisional License', full_name, national_id
 FROM applicationprovisionallicense
+UNION ALL
+SELECT id, service_name, application_date, status,
+attachment as file1, NULL as file2,
+'Notarial Act' as type, full_name, national_id
+FROM applicationnotarialact
+UNION ALL
+SELECT id, service_name, application_date, status,
+attachment as file1, NULL as file2,
+'Administrative Document' as type, full_name, national_id
+FROM applicationadministrative
+UNION ALL
+SELECT id, service_name, application_date, status,
+attachment as file1, NULL as file2,
+'Commercial Building Permit' as type, full_name, national_id
+FROM applicationcommercialbuilding
+UNION ALL
+SELECT id, service_name, application_date, status,
+attachment as file1, NULL as file2,
+'Academic Transcript' as type, full_name, national_id
+FROM applicationacademictranscript
+UNION ALL
+SELECT id, service_name, application_date, status,
+attachment as file1, NULL as file2,
+'Bank Statement' as type, full_name, national_id
+FROM applicationbankstatement
+UNION ALL
+SELECT id, service_name, application_date, status,
+attachment as file1, NULL as file2,
+'Business License' as type, full_name, national_id
+FROM applicationbusinesslicense
+UNION ALL
+SELECT id, service_name, application_date, status,
+attachment as file1, NULL as file2,
+'Medical Report' as type, full_name, national_id
+FROM applicationmedicalreport
+UNION ALL
+SELECT id, service_name, application_date, status,
+attachment as file1, NULL as file2,
+'Employment Contract' as type, full_name, national_id
+FROM applicationemploymentcontract
+UNION ALL
+SELECT id, service_name, application_date, status,
+attachment as file1, NULL as file2,
+'Property Ownership' as type, full_name, national_id
+FROM applicationpropertyownership
+UNION ALL
+SELECT id, service_name, application_date, status,
+attachment as file1, NULL as file2,
+'Power of Attorney' as type, full_name, national_id
+FROM applicationpowerofattorney
+UNION ALL
+SELECT id, service_name, application_date, status,
+attachment as file1, NULL as file2,
+'Court Judgment' as type, full_name, national_id
+FROM applicationcourtjudgment
+UNION ALL
+SELECT id, service_name, application_date, status,
+attachment as file1, NULL as file2,
+'Salary Certificate' as type, full_name, national_id
+FROM applicationsalarycertificate
 ORDER BY application_date DESC
 ");
 ?>
@@ -348,50 +417,6 @@ ORDER BY application_date DESC
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4>All Applications (Admin Panel)</h4>
     
-    <!-- Appeal Reminders Dropdown -->
-    <div class="dropdown">
-        <button class="btn btn-warning dropdown-toggle position-relative fw-bold" type="button" data-bs-toggle="dropdown">
-            <i class="fa fa-bell me-2"></i> Appeals
-            <?php if(mysqli_num_rows($activeAppeals) > 0): ?>
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    <?= mysqli_num_rows($activeAppeals); ?>
-                </span>
-            <?php endif; ?>
-        </button>
-        <div class="dropdown-menu dropdown-menu-end p-3 shadow-lg border-0" style="width: 350px; max-height: 400px; overflow-y: auto; border-radius: 12px;">
-            <h6 class="dropdown-header px-0 mb-2 border-bottom pb-2 text-dark fw-bold">Recent Citizen Appeals</h6>
-            <?php if(mysqli_num_rows($activeAppeals) > 0): ?>
-                <?php while($appeal = mysqli_fetch_assoc($activeAppeals)): ?>
-                    <div class="appeal-item border-bottom mb-2 pb-2">
-                        <div class="d-flex justify-content-between align-items-start mb-1">
-                            <span class="badge bg-warning text-dark small"><?= $appeal['application_type']; ?> #<?= $appeal['application_id']; ?></span>
-                            <small class="text-muted"><?= date('d M, H:i', strtotime($appeal['created_at'])); ?></small>
-                        </div>
-                        <p class="mb-1 small text-dark" style="line-height: 1.4;"><?= htmlspecialchars($appeal['message']); ?></p>
-                        <div class="d-flex justify-content-between align-items-center mt-2">
-                            <span class="small text-primary fw-semibold" style="font-size: 0.7rem;"><?= $appeal['citizen_email']; ?></span>
-                            <!-- Use distinct links instead of buttons to prevent dropdown conflict -->
-                            <div class="d-flex gap-2" onclick="event.stopPropagation();">
-                                <button type="button" 
-                                   class="btn btn-sm btn-info py-1 px-3 fw-bold text-white appeal-find-btn" 
-                                   style="font-size: 0.7rem; border-radius: 4px; pointer-events: auto; position: relative; z-index: 10001;"
-                                   data-app-id="<?= safe_id($appeal['application_type'], $appeal['application_id']); ?>">
-                                    <i class="fa fa-search me-1"></i> FIND
-                                </button>
-                                <form method="POST" class="m-0" style="display:inline;" onclick="event.stopPropagation();">
-                                    <input type="hidden" name="appeal_id" value="<?= $appeal['id']; ?>">
-                                    <button type="submit" name="resolve_appeal" class="btn btn-sm btn-outline-success py-1 px-2 fw-bold" style="font-size: 0.7rem; border-radius: 4px; pointer-events: auto; position: relative; z-index: 10001;">DONE</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                <?php endwhile; ?>
-                <?php mysqli_data_seek($activeAppeals, 0); // Reset for possible future reuse ?>
-            <?php else: ?>
-                <div class="text-center py-3 text-muted small">No pending appeals found.</div>
-            <?php endif; ?>
-        </div>
-    </div>
 </div>
 
 <?php if(mysqli_num_rows($allApplications) > 0): ?>
@@ -427,13 +452,8 @@ elseif($status=='cancelled') echo "<span class='text-dark fw-bold'>Cancelled</sp
 </td>
 <td>
 <?php
-$folder = '';
-switch($row['type']){
-    case 'Criminal Record': $folder="criminalrecord/"; break;
-    case 'Good Conduct': $folder="goodconduct/"; break;
-    case 'Driving Replacement': $folder="drivingreplacement/"; break;
-    case 'National ID': $folder="nationalid/"; break;
-}
+$folder = isset($service_mappings[$row['type']]) ? $service_mappings[$row['type']]['folder'] : "";
+
 if($folder!="" && !empty($row['file1'])){
     $img=$folder.$row['file1'];
     echo "<a href='$img' target='_blank'><img src='$img' width='60' style='border:1px solid #ccc;border-radius:4px;padding:2px;'></a>";
@@ -521,21 +541,10 @@ if($status!='cancelled')
 <td colspan="8">
 <?php
 $details = null;
-$table_map = [
-    'Criminal Record' => 'applicationcriminalrecord',
-    'Driving License' => 'applicationdrivinglicense',
-    'Driving Replacement' => 'applicationdrivingreplacement',
-    'Good Conduct' => 'applicationgoodconduct',
-    'Marriage Certificate' => 'applicationmarriagecertificate',
-    'National ID' => 'applicationnationalid',
-    'Passport' => 'applicationpassport',
-    'Passport Replacement' => 'applicationpassportreplacement',
-    'Provisional License' => 'applicationprovisionallicense'
-];
-if(isset($table_map[$row['type']])){
-    $table = $table_map[$row['type']];
+if(isset($service_mappings[$row['type']])){
+    $table = $service_mappings[$row['type']]['table'];
     $q = mysqli_query($conn,"SELECT * FROM $table WHERE id=".$row['id']);
-    if(mysqli_num_rows($q)>0) $details = mysqli_fetch_assoc($q);
+    if($q && mysqli_num_rows($q)>0) $details = mysqli_fetch_assoc($q);
 }
 ?>
 

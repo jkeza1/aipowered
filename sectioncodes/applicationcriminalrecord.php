@@ -43,8 +43,8 @@ $row = mysqli_fetch_assoc($result);
         </p>
 
         <button class="btn btn-primary mt-3"
-                data-toggle="modal"
-                data-target="#applyCriminalRecordModal">
+                data-bs-toggle="modal"
+                data-bs-target="#applyCriminalRecordModal">
             Apply Now
         </button>
 

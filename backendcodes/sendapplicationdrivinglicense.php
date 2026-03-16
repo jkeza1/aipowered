@@ -1,4 +1,5 @@
 <?php
+include 'sessionstart.php';
 if(isset($_POST['applydrivinglicense'])){
 
     include 'connection.php';

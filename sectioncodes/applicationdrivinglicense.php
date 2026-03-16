@@ -19,7 +19,7 @@ $row = mysqli_fetch_assoc($result);
         <p><strong>Price:</strong> <?php echo $row['price'].' '.$row['currency']; ?></p>
         <p><strong>Provided By:</strong> <?php echo $row['provided_by']; ?></p>
 
-        <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#applyModaldivinglicense">
+        <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#applyModaldivinglicense">
             Apply Now
         </button>
     </div>

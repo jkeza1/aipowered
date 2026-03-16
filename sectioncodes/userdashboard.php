@@ -20,6 +20,17 @@ $table_map = [
     'Passport' => 'applicationpassport',
     'Passport Replacement' => 'applicationpassportreplacement',
     'Provisional License' => 'applicationprovisionallicense',
+    'Academic Transcript' => 'applicationacademictranscript',
+    'Bank Statement' => 'applicationbankstatement',
+    'Notarial Act' => 'applicationnotarialact',
+    'Power of Attorney' => 'applicationpowerofattorney',
+    'Court Judgment' => 'applicationcourtjudgment',
+    'Salary Certificate' => 'applicationsalarycertificate',
+    'Employment Contract' => 'applicationemploymentcontract',
+    'Medical Report' => 'applicationmedicalreport',
+    'Business License' => 'applicationbusinesslicense',
+    'Property Ownership' => 'applicationpropertyownership',
+    'Certificate of Celibacy' => 'applicationcertificateofcelibacy',
     'National ID Profile' => 'national_id_profile',
     'Passport Profile' => 'passport_profile',
     'Driving License Profile' => 'driving_license_profile',
@@ -177,23 +188,51 @@ function get_application_position_by_type($conn,$app_type,$application_date){
 $allApplications = mysqli_query($conn,"
 SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Criminal Record' as type FROM applicationcriminalrecord WHERE email='$user_email' OR phone='$user_phone'
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Driving License' FROM applicationdrivinglicense WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Driving License' as type FROM applicationdrivinglicense WHERE email='$user_email' OR phone='$user_phone'
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Driving Replacement' FROM applicationdrivingreplacement WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Driving Replacement' as type FROM applicationdrivingreplacement WHERE email='$user_email' OR phone='$user_phone'
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Good Conduct' FROM applicationgoodconduct WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Good Conduct' as type FROM applicationgoodconduct WHERE email='$user_email' OR phone='$user_phone'
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Marriage Certificate' FROM applicationmarriagecertificate WHERE applicant_email='$user_email' OR applicant_phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Marriage Certificate' as type FROM applicationmarriagecertificate WHERE applicant_email='$user_email' OR applicant_phone='$user_phone'
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'National ID' FROM applicationnationalid WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'National ID' as type FROM applicationnationalid WHERE email='$user_email' OR phone='$user_phone'
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Passport' FROM applicationpassport WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Passport' as type FROM applicationpassport WHERE email='$user_email' OR phone='$user_phone'
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Passport Replacement' FROM applicationpassportreplacement WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Passport Replacement' as type FROM applicationpassportreplacement WHERE email='$user_email' OR phone='$user_phone'
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Provisional License' FROM applicationprovisionallicense WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Provisional License' as type FROM applicationprovisionallicense WHERE email='$user_email' OR phone='$user_phone'
+UNION ALL
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Academic Transcript' as type FROM applicationacademictranscript WHERE email='$user_email' OR phone='$user_phone'
+UNION ALL
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Bank Statement' as type FROM applicationbankstatement WHERE email='$user_email' OR phone='$user_phone'
+UNION ALL
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Notarial Act' as type FROM applicationnotarialact WHERE email='$user_email' OR phone='$user_phone'
+UNION ALL
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Power of Attorney' as type FROM applicationpowerofattorney WHERE email='$user_email' OR phone='$user_phone'
+UNION ALL
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Court Judgment' as type FROM applicationcourtjudgment WHERE email='$user_email' OR phone='$user_phone'
+UNION ALL
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Salary Certificate' as type FROM applicationsalarycertificate WHERE email='$user_email' OR phone='$user_phone'
+UNION ALL
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Employment Contract' as type FROM applicationemploymentcontract WHERE email='$user_email' OR phone='$user_phone'
+UNION ALL
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Medical Report' as type FROM applicationmedicalreport WHERE email='$user_email' OR phone='$user_phone'
+UNION ALL
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Business License' as type FROM applicationbusinesslicense WHERE email='$user_email' OR phone='$user_phone'
+UNION ALL
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Property Ownership' as type FROM applicationpropertyownership WHERE email='$user_email' OR phone='$user_phone'
+UNION ALL
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Administrative Service' as type FROM applicationadministrative WHERE email='$user_email' OR phone='$user_phone'
+UNION ALL
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Commercial Building' as type FROM applicationcommercialbuilding WHERE email='$user_email' OR phone='$user_phone'
 ORDER BY application_date DESC
 ");
+
+if (!$allApplications) {
+    die("Query Failed: " . mysqli_error($conn));
+}
 ?>
 
 <section class="ftco-section services-section py-0" style="margin-top: 154px;">
@@ -285,7 +324,18 @@ ORDER BY application_date DESC
                         'Certificate of Good Conduct' => 'certificate_of_good_conduct',
                         'Application for Provisional Driving License' => 'application_for_provisional_driving_license',
                         'Application for Definitive Driving License' => 'application_for_definitive_driving_license',
-                        'Application for New Passport' => 'application_for_new_passport'
+                        'Application for New Passport' => 'application_for_new_passport',
+                        'Academic Transcript' => 'academic_transcript',
+                        'Bank Statement' => 'bank_statement',
+                        'Notarial Act' => 'notarial_act',
+                        'Power of Attorney' => 'power_of_attorney',
+                        'Court Judgment' => 'court_judgment',
+                        'Salary Certificate' => 'salary_certificate',
+                        'Employment Contract' => 'employment_contract',
+                        'Medical Report' => 'medical_report',
+                        'Business License' => 'business_license',
+                        'Property Ownership' => 'property_ownership',
+                        'Certificate of Celibacy' => 'certificate_of_celibacy'
                     ];
 
                     $service_display = $row['service_name'];
@@ -337,6 +387,16 @@ ORDER BY application_date DESC
                             case 'National ID': echo "5,000 RWF"; break;
                             case 'Passport': echo "50,000 RWF"; break;
                             case 'Driving License': echo "10,000 RWF"; break;
+                            case 'Academic Transcript': echo "5,000 RWF"; break;
+                            case 'Bank Statement': echo "2,000 RWF"; break;
+                            case 'Notarial Act': echo "10,000 RWF"; break;
+                            case 'Power of Attorney': echo "10,000 RWF"; break;
+                            case 'Court Judgment': echo "3,000 RWF"; break;
+                            case 'Salary Certificate': echo "5,000 RWF"; break;
+                            case 'Employment Contract': echo "5,000 RWF"; break;
+                            case 'Medical Report': echo "10,000 RWF"; break;
+                            case 'Business License': echo "20,000 RWF"; break;
+                            case 'Property Ownership': echo "10,000 RWF"; break;
                             default: echo "5,000 RWF"; break;
                         }
                         ?>
@@ -348,9 +408,9 @@ ORDER BY application_date DESC
                                 <i class="fa fa-eye"></i>
                             </button>
                             <?php if($status=='approved'): ?>
-                            <button class="btn btn-outline-success btn-sm" onclick="alert('Download feature coming soon!')" title="Download Document">
+                            <a href="backendcodes/generate_document.php?id=<?= $row['id']; ?>&type=<?= urlencode($row['type']); ?>" class="btn btn-outline-success btn-sm" title="Download Document">
                                 <i class="fa fa-download"></i>
-                            </button>
+                            </a>
                             <?php endif; ?>
                             <?php if($status=='pending'): ?>
                             <form method="POST" style="display:inline;">
@@ -399,8 +459,127 @@ ORDER BY application_date DESC
                     </tbody>
                     </table>
                     </div>
+
+                    <?php 
+                    mysqli_data_seek($allApplications, 0); 
+                    while($row = mysqli_fetch_assoc($allApplications)):
+                        $modalId = safe_modal_id($row['type'], $row['id']);
+                        $status = strtolower($row['status']);
+
+                        // Find the database table for this application type
+                        $table = $table_map[$row['type']] ?? null;
+                        $details = null;
+
+                        if($table){
+                            // Try searching by specific ID first (fast and reliable if authorized)
+                            $q = mysqli_query($conn, "SELECT * FROM $table WHERE id=" . intval($row['id']));
+                            if($q && mysqli_num_rows($q) > 0){
+                                $details = mysqli_fetch_assoc($q);
+                                
+                                // Security check: Ensure this application belongs to the current user
+                                $check_email = $details['email'] ?? ($details['applicant_email'] ?? null);
+                                $check_phone = $details['phone'] ?? ($details['applicant_phone'] ?? null);
+                                
+                                // Grant access if email or phone matches OR if they are null (fallback for legacy/poorly saved data)
+                                if($check_email != $user_email && $check_phone != $user_phone && !empty($check_email) && !empty($check_phone)){
+                                    $details = null; // Unauthorized access attempt
+                                }
+                            }
+                        }
+                    ?>
+                    <!-- Dynamic Detail Modal for Application #<?= $row['id']; ?> -->
+                    <div class="modal fade" id="<?= $modalId; ?>" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header bg-light">
+                                    <h5 class="modal-title fw-bold">
+                                        <i class="fa fa-file-alt me-2 text-primary"></i>
+                                        <?= $row['service_name']; ?> Details
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <?php if($details): ?>
+                                    <div class="row g-3">
+                                        <?php 
+                                        // Filter out some internal fields
+                                        $exclude = ['id', 'status', 'admin_reason', 'application_date', 'expected_feedback_date'];
+                                        foreach($details as $field => $value): 
+                                            if(in_array($field, $exclude)) continue;
+                                        ?>
+                                        <div class="col-md-6 mb-2">
+                                            <label class="small text-muted text-uppercase fw-bold d-block"><?= str_replace('_', ' ', $field); ?></label>
+                                            <div class="border-bottom pb-1">
+                                                <?php 
+                                                // Check if it's an image/file path (simple heuristic)
+                                                if(!empty($value) && preg_match('/\.(jpg|jpeg|png|gif|pdf)$/i', $value)){
+                                                    // Determine the folder based on type
+                                                    $folder_map = [
+                                                        'Criminal Record' => 'adminsection/criminalrecord/',
+                                                        'National ID' => 'adminsection/nationalid/',
+                                                        'Passport' => 'adminsection/passports/',
+                                                        'Passport Replacement' => 'adminsection/passports/',
+                                                        'Driving License' => 'adminsection/drivinglicense/',
+                                                        'Driving Replacement' => 'adminsection/drivinglicense/',
+                                                        'Good Conduct' => 'adminsection/goodconduct/',
+                                                        'Marriage Certificate' => 'adminsection/marriagecertificate/',
+                                                        'Provisional License' => 'adminsection/provisional/',
+                                                        'Salary Certificate' => 'adminsection/salaryslip/',
+                                                        'Employment Contract' => 'adminsection/contract/',
+                                                        'Academic Transcript' => 'adminsection/academictranscript/',
+                                                        'Bank Statement' => 'adminsection/bankstatement/',
+                                                        'Notarial Act' => 'adminsection/notarialact/',
+                                                        'Power of Attorney' => 'adminsection/powerofattorney/',
+                                                        'Court Judgment' => 'adminsection/courtjudgment/',
+                                                        'Medical Report' => 'adminsection/medicalreport/',
+                                                        'Business License' => 'adminsection/businesslicense/',
+                                                        'Property Ownership' => 'adminsection/propertyownership/'
+                                                    ];
+                                                    $folder = $folder_map[$row['type']] ?? 'adminsection/uploads/';
+                                                    
+                                                    if(preg_match('/\.(pdf)$/i', $value)){
+                                                        echo "<a href='$folder$value' target='_blank' class='btn btn-sm btn-outline-primary mt-1'><i class='fa fa-file-pdf me-1'></i> View Document</a>";
+                                                    } else {
+                                                        echo "<img src='$folder$value' class='img-fluid rounded border mt-1 shadow-sm' style='max-width: 200px;' alt='Attachment'>";
+                                                    }
+                                                } else {
+                                                    echo htmlspecialchars($value ?: '-');
+                                                }
+                                                ?>
+                                            </div>
+                                        </div>
+                                        <?php endforeach; ?>
+                                    </div>
+
+                                    <?php if(!empty($row['admin_reason'])): ?>
+                                    <div class="mt-4 p-3 bg-light rounded border-start border-4 border-info">
+                                        <h6 class="fw-bold text-info mb-1 italic">Admin Remarks:</h6>
+                                        <p class="mb-0 small"><?= htmlspecialchars($row['admin_reason']); ?></p>
+                                    </div>
+                                    <?php endif; ?>
+
+                                    <?php else: ?>
+                                    <div class="text-center py-4">
+                                        <i class="fa fa-exclamation-triangle text-warning fa-3x mb-3"></i>
+                                        <p>Sorry, we couldn't load the details for this application.</p>
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endwhile; ?>
+
                     <?php else: ?>
-                    <p class="text-center py-5">No applications found.</p>
+                    <div class="text-center py-5">
+                        <i class="fa fa-folder-open fa-3x text-muted mb-3"></i>
+                        <h4 class="text-muted">No Applications Found</h4>
+                        <p>We couldn't find any applications matching your account <b>(<?= $_SESSION['email'] ?? 'No Email'; ?> / <?= $_SESSION['phone'] ?? 'No Phone'; ?>)</b>.</p>
+                        <a href="index.php" class="btn btn-primary mt-3">Apply for a Service</a>
+                    </div>
                     <?php endif; ?>
                 </div>
 

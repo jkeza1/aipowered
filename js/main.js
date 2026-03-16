@@ -3,13 +3,18 @@
 
     // Spinner
     var spinner = function () {
-        setTimeout(function () {
-            if ($('#spinner').length > 0) {
-                $('#spinner').removeClass('show');
-            }
-        }, 1);
+        if ($('#spinner').length > 0) {
+            $('#spinner').removeClass('show');
+        }
     };
-    spinner();
+    $(window).on('load', function() {
+        spinner();
+    });
+    
+    // Backup: If window load doesn't fire fast enough
+    setTimeout(function () {
+        spinner();
+    }, 2000);
     
     
     // Initiate the wowjs

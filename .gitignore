@@ -1,0 +1,22 @@
+# Environments
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Datasets and Generated Documents (Large folders)
+synthetic_documents/
+fixed_synthetic/
+high_risk_dataset/
+samples_documents/
+CASIA2/
+output/
+testing_screenshots/
+
+# OS/Editor
+.DS_Store
+Thumbs.db
+.vscode/
+*.swp
+*.lock

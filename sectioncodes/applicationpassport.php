@@ -22,7 +22,7 @@ $row = mysqli_fetch_assoc($result);
         <p><strong>Fee:</strong> <?php echo $row['fee']; ?></p>
         <p><strong>Provided By:</strong> <?php echo $row['provided_by']; ?></p>
 
-        <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#applyPassportModal">
+        <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#applyPassportModal">
             Apply Now
         </button>
 

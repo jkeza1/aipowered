@@ -1,7 +1,5 @@
 <?php
 include 'backendcodes/sessionstart.php';
-?>
-<?php
 include 'backendcodes/connection.php';
 ?>
 <!DOCTYPE html>
@@ -18,6 +16,10 @@ include 'sectioncodes/navbar.php';
 ?>
 <?php
 include 'sectioncodes/login.php';
+?>
+<?php
+include 'backendcodes/login.php';
+?>
 ?>
 <?php
 include 'backendcodes/login.php';

@@ -31,8 +31,8 @@ $row = mysqli_fetch_assoc($result);
         </p>
 
         <button class="btn btn-primary mt-3"
-                data-toggle="modal"
-                data-target="#applyPassportReplacementModal">
+                data-bs-toggle="modal"
+                data-bs-target="#applyPassportReplacementModal">
             Apply for Replacement
         </button>
 
