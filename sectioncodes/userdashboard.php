@@ -185,49 +185,70 @@ function get_application_position_by_type($conn,$app_type,$application_date){
 /* ===============================
    FETCH APPLICATIONS
 ================================ */
+$sort = isset($_GET['sort']) ? $_GET['sort'] : 'newest';
+$search = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
+$searchType = isset($_GET['searchType']) ? $_GET['searchType'] : 'app_no';
+
+$orderBy = "ORDER BY application_date DESC";
+if ($sort === 'oldest') {
+    $orderBy = "ORDER BY application_date ASC";
+} elseif ($sort === 'status') {
+    $orderBy = "ORDER BY status ASC, application_date DESC";
+}
+
+$whereClause = "";
+if (!empty($search)) {
+    $search_esc = mysqli_real_escape_string($conn, $search);
+    if ($searchType === 'app_no') {
+        $whereClause = " AND id = '$search_esc'";
+    } elseif ($searchType === 'app_name') {
+        $whereClause = " AND service_name LIKE '%$search_esc%'"; 
+    }
+}
+
 $allApplications = mysqli_query($conn,"
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Criminal Record' as type FROM applicationcriminalrecord WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Criminal Record' as type FROM applicationcriminalrecord WHERE (email='$user_email' OR phone='$user_phone') $whereClause
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Driving License' as type FROM applicationdrivinglicense WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Driving License' as type FROM applicationdrivinglicense WHERE (email='$user_email' OR phone='$user_phone') $whereClause
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Driving Replacement' as type FROM applicationdrivingreplacement WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Driving Replacement' as type FROM applicationdrivingreplacement WHERE (email='$user_email' OR phone='$user_phone') $whereClause
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Good Conduct' as type FROM applicationgoodconduct WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Good Conduct' as type FROM applicationgoodconduct WHERE (email='$user_email' OR phone='$user_phone') $whereClause
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Marriage Certificate' as type FROM applicationmarriagecertificate WHERE applicant_email='$user_email' OR applicant_phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Marriage Certificate' as type FROM applicationmarriagecertificate WHERE (applicant_email='$user_email' OR applicant_phone='$user_phone') $whereClause
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'National ID' as type FROM applicationnationalid WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'National ID' as type FROM applicationnationalid WHERE (email='$user_email' OR phone='$user_phone') $whereClause
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Passport' as type FROM applicationpassport WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Passport' as type FROM applicationpassport WHERE (email='$user_email' OR phone='$user_phone') $whereClause
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Passport Replacement' as type FROM applicationpassportreplacement WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Passport Replacement' as type FROM applicationpassportreplacement WHERE (email='$user_email' OR phone='$user_phone') $whereClause
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Provisional License' as type FROM applicationprovisionallicense WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Provisional License' as type FROM applicationprovisionallicense WHERE (email='$user_email' OR phone='$user_phone') $whereClause
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Academic Transcript' as type FROM applicationacademictranscript WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Academic Transcript' as type FROM applicationacademictranscript WHERE (email='$user_email' OR phone='$user_phone') $whereClause
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Bank Statement' as type FROM applicationbankstatement WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Bank Statement' as type FROM applicationbankstatement WHERE (email='$user_email' OR phone='$user_phone') $whereClause
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Notarial Act' as type FROM applicationnotarialact WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Notarial Act' as type FROM applicationnotarialact WHERE (email='$user_email' OR phone='$user_phone') $whereClause
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Power of Attorney' as type FROM applicationpowerofattorney WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Power of Attorney' as type FROM applicationpowerofattorney WHERE (email='$user_email' OR phone='$user_phone') $whereClause
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Court Judgment' as type FROM applicationcourtjudgment WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Court Judgment' as type FROM applicationcourtjudgment WHERE (email='$user_email' OR phone='$user_phone') $whereClause
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Salary Certificate' as type FROM applicationsalarycertificate WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Salary Certificate' as type FROM applicationsalarycertificate WHERE (email='$user_email' OR phone='$user_phone') $whereClause
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Employment Contract' as type FROM applicationemploymentcontract WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Employment Contract' as type FROM applicationemploymentcontract WHERE (email='$user_email' OR phone='$user_phone') $whereClause
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Medical Report' as type FROM applicationmedicalreport WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Medical Report' as type FROM applicationmedicalreport WHERE (email='$user_email' OR phone='$user_phone') $whereClause
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Business License' as type FROM applicationbusinesslicense WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Business License' as type FROM applicationbusinesslicense WHERE (email='$user_email' OR phone='$user_phone') $whereClause
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Property Ownership' as type FROM applicationpropertyownership WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Property Ownership' as type FROM applicationpropertyownership WHERE (email='$user_email' OR phone='$user_phone') $whereClause
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Administrative Service' as type FROM applicationadministrative WHERE email='$user_email' OR phone='$user_phone'
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Administrative Service' as type FROM applicationadministrative WHERE (email='$user_email' OR phone='$user_phone') $whereClause
 UNION ALL
-SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Commercial Building' as type FROM applicationcommercialbuilding WHERE email='$user_email' OR phone='$user_phone'
-ORDER BY application_date DESC
+SELECT id, service_name, application_date, status, admin_reason, expected_feedback_date, 'Commercial Building' as type FROM applicationcommercialbuilding WHERE (email='$user_email' OR phone='$user_phone') $whereClause
+$orderBy
 ");
 
 if (!$allApplications) {
@@ -261,26 +282,27 @@ if (!$allApplications) {
         <!-- Main Content -->
         <div class="col-md-9">
             <!-- Header Section for Applications (Fixed relative to content) -->
-            <div class="bg-white rounded border shadow-sm p-4 mb-3 sticky-top" style="top: 154px; z-index: 999;">
+            <div class="bg-white rounded border shadow-md p-4 mb-3 sticky-top" style="top: 100px; z-index: 1025; margin-bottom: 25px; border-bottom: 2px solid #eee !important; background-color: white !important;">
                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                     <h5 class="mb-0 fw-bold"><?php echo __('my_applications'); ?></h5>
                     
                     <div class="flex-grow-1 mx-lg-3" style="max-width: 500px;">
-                        <div class="input-group">
-                            <select class="form-select bg-light border-end-0" style="max-width: 140px; border-top-right-radius: 0; border-bottom-right-radius: 0;" id="searchType">
-                                <option value="app_no">App No</option>
-                                <option value="bill_id">Billing ID</option>
+                        <form method="GET" action="userdashboard.php" class="input-group">
+                            <input type="hidden" name="sort" value="<?= htmlspecialchars($sort); ?>">
+                            <select name="searchType" class="form-select bg-light border-end-0" style="max-width: 140px; border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                                <option value="app_no" <?= $searchType === 'app_no' ? 'selected' : ''; ?>>App No</option>
+                                <option value="app_name" <?= $searchType === 'app_name' ? 'selected' : ''; ?>>Service Name</option>
                             </select>
-                            <input type="text" class="form-control bg-light" placeholder="Type here to search..." id="appSearchInput">
-                            <span class="input-group-text bg-light border-start-0"><i class="fa fa-search text-muted"></i></span>
-                        </div>
+                            <input type="text" name="search" class="form-control bg-light" placeholder="Type here to search..." value="<?= htmlspecialchars($search); ?>">
+                            <button type="submit" class="input-group-text bg-light border-start-0"><i class="fa fa-search text-muted"></i></button>
+                        </form>
                     </div>
 
                     <div class="d-flex align-items-center gap-2">
-                        <select class="form-select border-0 bg-light fw-semibold" style="width: auto; cursor: pointer;">
-                            <option>Sort by: Newest</option>
-                            <option>Sort by: Oldest</option>
-                            <option>Sort by: Status</option>
+                        <select class="form-select border-0 bg-light fw-semibold" style="width: auto; cursor: pointer;" onchange="location.href='userdashboard.php?sort=' + this.value + '&search=<?= urlencode($search); ?>&searchType=<?= urlencode($searchType); ?>';">
+                            <option value="newest" <?php echo $sort === 'newest' ? 'selected' : ''; ?>>Sort by: Newest</option>
+                            <option value="oldest" <?php echo $sort === 'oldest' ? 'selected' : ''; ?>>Sort by: Oldest</option>
+                            <option value="status" <?php echo $sort === 'status' ? 'selected' : ''; ?>>Sort by: Status</option>
                         </select>
                         <a href="index.php" class="btn btn-primary px-3 rounded-pill fw-bold">
                             <i class="fa fa-plus me-2"></i>New Application
@@ -502,8 +524,8 @@ if (!$allApplications) {
                                     <?php if($details): ?>
                                     <div class="row g-3">
                                         <?php 
-                                        // Filter out some internal fields
-                                        $exclude = ['id', 'status', 'admin_reason', 'application_date', 'expected_feedback_date'];
+                                        // Filter out internal and AI forensic fields
+                                        $exclude = ['id', 'status', 'admin_reason', 'application_date', 'expected_feedback_date', 'ai_verdict', 'ai_forgery_score', 'forensic_report'];
                                         foreach($details as $field => $value): 
                                             if(in_array($field, $exclude)) continue;
                                         ?>
@@ -765,42 +787,7 @@ if (!$allApplications) {
 </section>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('appSearchInput');
-    const searchType = document.getElementById('searchType');
-    const tableRows = document.querySelectorAll('#v-pills-apps table tbody tr');
-
-    function filterTable() {
-        const query = searchInput.value.toLowerCase();
-        const type = searchType.value;
-        
-        tableRows.forEach(row => {
-            const cells = row.getElementsByTagName('td');
-            if(cells.length < 1) return;
-
-            let textToSearch = "";
-            const appNo = cells[0].innerText.toLowerCase();
-            // Note: Since Billing ID isn't a dedicated column in the current display table, 
-            // the user might be referring to Application No as the searchable ID. 
-            // We search the whole row if "Search All" is selected, or target the App No column specifically.
-            
-            if (type === 'app_no') {
-                textToSearch = appNo;
-            } else if (type === 'bill_id') {
-                // Currently searching the second column or specific parts if available
-                textToSearch = row.innerText.toLowerCase(); 
-            } else {
-                textToSearch = row.innerText.toLowerCase();
-            }
-
-            const isMatch = textToSearch.includes(query);
-            row.style.display = isMatch ? '' : 'none';
-        });
-    }
-
-    if (searchInput) {
-        searchInput.addEventListener('keyup', filterTable);
-        searchType.addEventListener('change', filterTable);
-    }
-});
+// Backend search implemented via GET. 
+// JavaScript filtering can still be used for real-time UI updates if needed, 
+// but the core logic now handles database-level searching.
 </script>
