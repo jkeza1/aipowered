@@ -1,67 +1,83 @@
+<?php
+$serviceTypeLabels = [
+    'notarialact' => __('svc_notarial'),
+    'bankstatement' => __('svc_bank'),
+    'academictranscript' => __('svc_academic'),
+    'administrative' => __('admin_service_administrative'),
+    'businesslicense' => __('admin_service_business_license_short'),
+    'medicalreport' => __('admin_service_medical_report_short'),
+    'commercialbuilding' => __('admin_service_building_permit_short'),
+    'employmentcontract' => __('svc_employment_contract'),
+    'propertyownership' => __('admin_service_property_short'),
+    'powerofattorney' => __('svc_power_attorney'),
+    'courtjudgment' => __('svc_court_judgment'),
+    'salarycertificate' => __('svc_salary'),
+];
+?>
 
 <div class="sidebar shadow" id="sidebar" style="height:100vh; overflow-y: auto; background: #f8f9fa; border-right: 1px solid #dee2e6;">
     <div class="sidebar-header p-4 d-flex align-items-center justify-content-between" style="background: #0063CF;">
-        <h5 class="text-white mb-0 fw-bold">ADMIN PANEL</h5>
-        <button class="btn btn-sm text-white border-0" onclick="toggleSidebar()">✕</button>
+        <h5 class="text-white mb-0 fw-bold"><?php echo __('admin_panel'); ?></h5>
+        <button class="btn btn-sm text-white border-0" onclick="toggleSidebar()">X</button>
     </div>
     
     <div class="p-3">
-        <small class="text-uppercase text-muted fw-bold mb-2 d-block" style="font-size: 0.65rem; letter-spacing: 1px;">Main Menu</small>
+        <small class="text-uppercase text-muted fw-bold mb-2 d-block" style="font-size: 0.65rem; letter-spacing: 1px;"><?php echo __('admin_main_menu'); ?></small>
         <ul class="nav flex-column gap-1">
             <li class="nav-item">
                 <a href="dashboard.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark" style="transition: all 0.2s;">
-                    <i class="fa fa-home me-3 text-primary" style="width: 20px;"></i> Dashboard
+                    <i class="fa fa-home me-3 text-primary" style="width: 20px;"></i> <?php echo __('admin_dashboard'); ?>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="systeminfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark">
-                    <i class="fa fa-cog me-3 text-secondary" style="width: 20px;"></i> System Settings
+                    <i class="fa fa-cog me-3 text-secondary" style="width: 20px;"></i> <?php echo __('admin_system_settings'); ?>
                 </a>
             </li>
         </ul>
 
-        <small class="text-uppercase text-muted fw-bold mt-4 mb-2 d-block" style="font-size: 0.65rem; letter-spacing: 1px;">Service Management</small>
+        <small class="text-uppercase text-muted fw-bold mt-4 mb-2 d-block" style="font-size: 0.65rem; letter-spacing: 1px;"><?php echo __('admin_service_management'); ?></small>
         <ul class="nav flex-column gap-1">
-            <li class="nav-item"><a href="nationalidinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-address-card me-3 text-info" style="width: 20px;"></i> National Id</a></li>
-            <li class="nav-item"><a href="drivinglicenseinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-id-card me-3 text-success" style="width: 20px;"></i> Driving License</a></li>
-            <li class="nav-item"><a href="passportinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-passport me-3 text-primary" style="width: 20px;"></i> Passport</a></li>
-            <li class="nav-item"><a href="marriagecertificateinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-ring me-3 text-warning" style="width: 20px;"></i> Marriage Cert.</a></li>
-            <li class="nav-item"><a href="criminalrecordinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-file-invoice me-3 text-danger" style="width: 20px;"></i> Criminal Record</a></li>
-            <li class="nav-item"><a href="goodconductinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-check-circle me-3 text-success" style="width: 20px;"></i> Good Conduct</a></li>
+            <li class="nav-item"><a href="nationalidinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-address-card me-3 text-info" style="width: 20px;"></i> <?php echo __('svc_replace_nid'); ?></a></li>
+            <li class="nav-item"><a href="drivinglicenseinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-id-card me-3 text-success" style="width: 20px;"></i> <?php echo __('svc_definitive'); ?></a></li>
+            <li class="nav-item"><a href="passportinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-passport me-3 text-primary" style="width: 20px;"></i> <?php echo __('svc_passport'); ?></a></li>
+            <li class="nav-item"><a href="marriagecertificateinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-ring me-3 text-warning" style="width: 20px;"></i> <?php echo __('svc_marriage'); ?></a></li>
+            <li class="nav-item"><a href="criminalrecordinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-file-invoice me-3 text-danger" style="width: 20px;"></i> <?php echo __('svc_criminal_record'); ?></a></li>
+            <li class="nav-item"><a href="goodconductinfo.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-check-circle me-3 text-success" style="width: 20px;"></i> <?php echo __('svc_good_conduct'); ?></a></li>
             
-            <li class="nav-item"><a href="servicemanagement.php?type=notarialact" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-stamp me-3 text-warning" style="width: 20px;"></i> Notarial Act</a></li>
-            <li class="nav-item"><a href="servicemanagement.php?type=bankstatement" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-university me-3 text-primary" style="width: 20px;"></i> Bank Statement</a></li>
-            <li class="nav-item"><a href="servicemanagement.php?type=academictranscript" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-graduation-cap me-3 text-info" style="width: 20px;"></i> Transcript</a></li>
+            <li class="nav-item"><a href="servicemanagement.php?type=notarialact" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-stamp me-3 text-warning" style="width: 20px;"></i> <?php echo $serviceTypeLabels['notarialact']; ?></a></li>
+            <li class="nav-item"><a href="servicemanagement.php?type=bankstatement" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-university me-3 text-primary" style="width: 20px;"></i> <?php echo $serviceTypeLabels['bankstatement']; ?></a></li>
+            <li class="nav-item"><a href="servicemanagement.php?type=academictranscript" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-graduation-cap me-3 text-info" style="width: 20px;"></i> <?php echo $serviceTypeLabels['academictranscript']; ?></a></li>
             
             <li class="nav-item">
                 <a class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark dropdown-toggle" href="#" data-toggle="collapse" data-target="#moreServicesMenu" aria-expanded="false">
-                    <i class="fa fa-plus-circle me-3 text-secondary" style="width: 20px;"></i> More Services
+                    <i class="fa fa-plus-circle me-3 text-secondary" style="width: 20px;"></i> <?php echo __('admin_more_services'); ?>
                 </a>
                 <div class="collapse" id="moreServicesMenu">
                     <ul class="nav flex-column ms-4 small">
-                        <li><a href="servicemanagement.php?type=administrative" class="nav-link py-1 text-dark">Administrative</a></li>
-                        <li><a href="servicemanagement.php?type=businesslicense" class="nav-link py-1 text-dark">Business Lic.</a></li>
-                        <li><a href="servicemanagement.php?type=medicalreport" class="nav-link py-1 text-dark">Medical Rep.</a></li>
-                        <li><a href="servicemanagement.php?type=commercialbuilding" class="nav-link py-1 text-dark">Bldg Permit</a></li>
-                        <li><a href="servicemanagement.php?type=employmentcontract" class="nav-link py-1 text-dark">Employment</a></li>
-                        <li><a href="servicemanagement.php?type=propertyownership" class="nav-link py-1 text-dark">Property</a></li>
-                        <li><a href="servicemanagement.php?type=powerofattorney" class="nav-link py-1 text-dark">Power of Attorney</a></li>
-                        <li><a href="servicemanagement.php?type=courtjudgment" class="nav-link py-1 text-dark">Court Judgment</a></li>
-                        <li><a href="servicemanagement.php?type=salarycertificate" class="nav-link py-1 text-dark">Salary Certificate</a></li>
+                        <li><a href="servicemanagement.php?type=administrative" class="nav-link py-1 text-dark"><?php echo $serviceTypeLabels['administrative']; ?></a></li>
+                        <li><a href="servicemanagement.php?type=businesslicense" class="nav-link py-1 text-dark"><?php echo $serviceTypeLabels['businesslicense']; ?></a></li>
+                        <li><a href="servicemanagement.php?type=medicalreport" class="nav-link py-1 text-dark"><?php echo $serviceTypeLabels['medicalreport']; ?></a></li>
+                        <li><a href="servicemanagement.php?type=commercialbuilding" class="nav-link py-1 text-dark"><?php echo $serviceTypeLabels['commercialbuilding']; ?></a></li>
+                        <li><a href="servicemanagement.php?type=employmentcontract" class="nav-link py-1 text-dark"><?php echo $serviceTypeLabels['employmentcontract']; ?></a></li>
+                        <li><a href="servicemanagement.php?type=propertyownership" class="nav-link py-1 text-dark"><?php echo $serviceTypeLabels['propertyownership']; ?></a></li>
+                        <li><a href="servicemanagement.php?type=powerofattorney" class="nav-link py-1 text-dark"><?php echo $serviceTypeLabels['powerofattorney']; ?></a></li>
+                        <li><a href="servicemanagement.php?type=courtjudgment" class="nav-link py-1 text-dark"><?php echo $serviceTypeLabels['courtjudgment']; ?></a></li>
+                        <li><a href="servicemanagement.php?type=salarycertificate" class="nav-link py-1 text-dark"><?php echo $serviceTypeLabels['salarycertificate']; ?></a></li>
                     </ul>
                 </div>
             </li>
         </ul>
 
-        <small class="text-uppercase text-muted fw-bold mt-4 mb-2 d-block" style="font-size: 0.65rem; letter-spacing: 1px;">System Data</small>
+        <small class="text-uppercase text-muted fw-bold mt-4 mb-2 d-block" style="font-size: 0.65rem; letter-spacing: 1px;"><?php echo __('admin_system_data'); ?></small>
         <ul class="nav flex-column gap-1">
-            <li class="nav-item"><a href="citizenregister.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-users me-3 text-dark" style="width: 20px;"></i> Registry</a></li>
-            <li class="nav-item"><a href="allapplications.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-list me-3 text-primary" style="width: 20px;"></i> Applications</a></li>
+            <li class="nav-item"><a href="citizenregister.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-users me-3 text-dark" style="width: 20px;"></i> <?php echo __('admin_registry'); ?></a></li>
+            <li class="nav-item"><a href="allapplications.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-dark"><i class="fa fa-list me-3 text-primary" style="width: 20px;"></i> <?php echo __('admin_applications'); ?></a></li>
         </ul>
 
         <div class="mt-5 border-top pt-3">
             <a href="phpincludes/logout.php" class="nav-link py-2 px-3 rounded d-flex align-items-center text-danger">
-                <i class="fa fa-sign-out-alt me-3" style="width: 20px;"></i> Logout
+                <i class="fa fa-sign-out-alt me-3" style="width: 20px;"></i> <?php echo __('logout'); ?>
             </a>
         </div>
     </div>
@@ -79,8 +95,58 @@
 </style>
 
 <button class="btn menu-toggle text-white d-flex align-items-center px-4 py-2 shadow" onclick="toggleSidebar()" style="background: #0063CF; border-radius: 0 25px 25px 0; position: fixed; left: 0; top: 20px; z-index: 1000;">
-    <i class="fa fa-bars me-2"></i> <?php echo $row['name'] ?? 'ADMIN MENU'; ?>
+    <i class="fa fa-bars me-2"></i> <?php echo $row['name'] ?? __('admin_menu'); ?>
 </button>
+
+<!-- Admin Language Selector (separate from citizen language) -->
+<div class="position-fixed" style="top: 20px; right: 78px; z-index: 1050;">
+    <?php
+    $adminCurrentLang = $_SESSION['admin_lang'] ?? 'en';
+    $adminBasePath = basename($_SERVER['PHP_SELF']);
+    $adminQuery = $_GET;
+    unset($adminQuery['admin_lang']);
+
+    $adminQueryEn = $adminQuery;
+    $adminQueryEn['admin_lang'] = 'en';
+    $adminQueryRw = $adminQuery;
+    $adminQueryRw['admin_lang'] = 'rw';
+    $adminQueryFr = $adminQuery;
+    $adminQueryFr['admin_lang'] = 'fr';
+
+    $adminLangUrlEn = $adminBasePath . '?' . http_build_query($adminQueryEn);
+    $adminLangUrlRw = $adminBasePath . '?' . http_build_query($adminQueryRw);
+    $adminLangUrlFr = $adminBasePath . '?' . http_build_query($adminQueryFr);
+    ?>
+    <div class="dropdown">
+        <button class="btn btn-light shadow-sm rounded-circle d-flex align-items-center justify-content-center position-relative"
+                type="button"
+                id="adminLangBtn"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                title="<?php echo __('language'); ?>"
+                style="width: 45px; height: 45px; border: 1px solid #dee2e6;">
+            <i class="fa fa-globe text-primary"></i>
+        </button>
+        <div class="dropdown-menu dropdown-menu-right shadow-lg border-0 p-0 mt-2" aria-labelledby="adminLangBtn" style="width: 210px; border-radius: 12px; overflow: hidden; right: 0; left: auto;">
+            <div class="bg-primary p-2 text-white text-center small fw-bold"><?php echo __('language'); ?></div>
+            <div class="p-2">
+                <a class="dropdown-item rounded d-flex justify-content-between align-items-center py-2" href="<?= $adminLangUrlEn; ?>">
+                    <?php echo __('english'); ?>
+                    <?php if ($adminCurrentLang === 'en'): ?><i class="fa fa-check text-success"></i><?php endif; ?>
+                </a>
+                <a class="dropdown-item rounded d-flex justify-content-between align-items-center py-2" href="<?= $adminLangUrlRw; ?>">
+                    <?php echo __('kinyarwanda'); ?>
+                    <?php if ($adminCurrentLang === 'rw'): ?><i class="fa fa-check text-success"></i><?php endif; ?>
+                </a>
+                <a class="dropdown-item rounded d-flex justify-content-between align-items-center py-2" href="<?= $adminLangUrlFr; ?>">
+                    <?php echo __('french'); ?>
+                    <?php if ($adminCurrentLang === 'fr'): ?><i class="fa fa-check text-success"></i><?php endif; ?>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Appeal Notification Button (Top Right) -->
 <div class="position-fixed" style="top: 20px; right: 20px; z-index: 1050;">
@@ -103,8 +169,8 @@
         </button>
         <div class="dropdown-menu dropdown-menu-right shadow-lg border-0 p-0 mt-2" aria-labelledby="appealNotifyBtn" style="width: 320px; border-radius: 12px; overflow: hidden; right: 0; left: auto;">
             <div class="bg-primary p-3 text-white">
-                <h6 class="mb-0 fw-bold text-white"><i class="fa fa-exclamation-triangle me-2"></i> Service Appeals</h6>
-                <small class="opacity-75">Recent citizen requests for review</small>
+                <h6 class="mb-0 fw-bold text-white"><i class="fa fa-exclamation-triangle me-2"></i> <?php echo __('admin_service_appeals'); ?></h6>
+                <small class="opacity-75"><?php echo __('admin_recent_review_requests'); ?></small>
             </div>
             <div class="p-2" style="max-height: 350px; overflow-y: auto;">
                 <?php
@@ -120,18 +186,18 @@
                         <p class="mb-1 text-dark small text-truncate-2" style="line-height: 1.3; font-size: 0.8rem;">
                             <?= htmlspecialchars($appeal['message']) ?>
                         </p>
-                        <small class="text-primary fw-semibold" style="font-size: 0.7rem;">ID: <?= $appeal['citizen_email'] ?></small>
+                        <small class="text-primary fw-semibold" style="font-size: 0.7rem;"><?php echo __('admin_citizen_id'); ?>: <?= $appeal['citizen_email'] ?></small>
                     </a>
                 <?php endwhile; ?>
                 <?php else: ?>
                     <div class="text-center py-4">
                         <i class="fa fa-check-circle fa-2x text-success mb-2 opacity-25"></i>
-                        <p class="text-muted mb-0 small">No pending appeals</p>
+                        <p class="text-muted mb-0 small"><?php echo __('admin_no_pending_appeals'); ?></p>
                     </div>
                 <?php endif; ?>
             </div>
             <a href="allapplications.php" class="bg-light text-center py-2 d-block text-decoration-none small fw-bold text-primary border-top">
-                View All Applications
+                <?php echo __('admin_view_all_applications'); ?>
             </a>
         </div>
     </div>

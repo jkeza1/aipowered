@@ -56,7 +56,7 @@ function scrollToApplication(appId) {
     const detailRow = document.getElementById('form-' + appId);
     
     if (!mainRow) {
-        alert("Application #" + appId + " is not currently visible on this list.");
+        alert("<?php echo __('admin_application_not_visible'); ?> #" + appId);
         return;
     }
 

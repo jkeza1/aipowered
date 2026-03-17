@@ -49,8 +49,8 @@ if(isset($_POST['savecitizen'])) {
         if($check && mysqli_num_rows($check) > 0) {
             echo "<script>
                 swal({
-                    title: 'Duplicate!',
-                    text: 'Passport number already exists!',
+                    title: '" . __('admin_duplicate') . "',
+                    text: '" . __('admin_passport_exists') . "',
                     icon: 'warning',
                     button: 'OK'
                 }).then(() => { window.location.href = ''; });
@@ -96,8 +96,8 @@ if(isset($_POST['savecitizen'])) {
     if(@mysqli_query($conn, $sql)) {
         echo "<script>
             swal({
-                title: 'Saved!',
-                text: 'Citizen record saved successfully!',
+                title: '" . __('admin_saved') . "',
+                text: '" . __('admin_citizen_saved') . "',
                 icon: 'success',
                 button: 'OK'
             }).then(() => { window.location.href = ''; });
@@ -105,8 +105,8 @@ if(isset($_POST['savecitizen'])) {
     } else {
         echo "<script>
             swal({
-                title: 'Failed!',
-                text: 'Citizen record not saved.',
+                title: '" . __('admin_failed') . "',
+                text: '" . __('admin_citizen_not_saved') . "',
                 icon: 'warning',
                 button: 'OK'
             }).then(() => { window.location.href = ''; });
@@ -128,7 +128,7 @@ $all_citizens = @mysqli_query($conn, "SELECT * FROM citizensregistry ORDER BY cr
 
 <section class="ftco-section services-section">
 <div class="container">
-    <h3 class="mb-4 text-center">Register / Update Citizen</h3>
+    <h3 class="mb-4 text-center"><?php echo __('admin_register_update_citizen'); ?></h3>
 
     <form method="POST" enctype="multipart/form-data">
         <input type="hidden" name="id" value="<?php echo $update_row['id'] ?? ''; ?>">
@@ -137,95 +137,95 @@ $all_citizens = @mysqli_query($conn, "SELECT * FROM citizensregistry ORDER BY cr
 
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>First Name</label>
-                    <input type="text" name="first_name" class="form-control" placeholder="Enter first-name" required
+                          <label><?php echo __('admin_first_name'); ?></label>
+                          <input type="text" name="first_name" class="form-control" placeholder="<?php echo __('admin_enter_first_name'); ?>" required
                            value="<?php echo $update_row['first_name'] ?? ''; ?>">
                 </div>
                 <div class="form-group">
-                    <label>Last Name</label>
-                    <input type="text" name="last_name" class="form-control" placeholder="Enter last-name" required
+                          <label><?php echo __('admin_last_name'); ?></label>
+                          <input type="text" name="last_name" class="form-control" placeholder="<?php echo __('admin_enter_last_name'); ?>" required
                            value="<?php echo $update_row['last_name'] ?? ''; ?>">
                 </div>
                 <div class="form-group">
-                    <label>Gender</label>
+                          <label><?php echo __('gender'); ?></label>
                     <select name="gender" class="form-control" required>
-                        <option value="">Select Gender</option>
-                        <option value="Male" <?php if(($update_row['gender'] ?? '')=='Male') echo 'selected'; ?>>Male</option>
-                        <option value="Female" <?php if(($update_row['gender'] ?? '')=='Female') echo 'selected'; ?>>Female</option>
-                        <option value="Other" <?php if(($update_row['gender'] ?? '')=='Other') echo 'selected'; ?>>Other</option>
+                           <option value=""><?php echo __('select_gender'); ?></option>
+                           <option value="Male" <?php if(($update_row['gender'] ?? '')=='Male') echo 'selected'; ?>><?php echo __('male'); ?></option>
+                           <option value="Female" <?php if(($update_row['gender'] ?? '')=='Female') echo 'selected'; ?>><?php echo __('female'); ?></option>
+                           <option value="Other" <?php if(($update_row['gender'] ?? '')=='Other') echo 'selected'; ?>><?php echo __('admin_other'); ?></option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Date of Birth</label>
+                          <label><?php echo __('dob'); ?></label>
                     <input type="date" name="date_of_birth" class="form-control" required
                            value="<?php echo $update_row['date_of_birth'] ?? ''; ?>">
                 </div>
                 <div class="form-group">
-                    <label>Place of Birth</label>
+                          <label><?php echo __('admin_place_of_birth'); ?></label>
                     <input type="text" name="place_of_birth" class="form-control"
-                           value="<?php echo $update_row['place_of_birth'] ?? ''; ?>" placeholder="Enter birth-place">
+                              value="<?php echo $update_row['place_of_birth'] ?? ''; ?>" placeholder="<?php echo __('admin_enter_birth_place'); ?>">
                 </div>
                 <div class="form-group">
-                    <label>National ID</label>
+                          <label><?php echo __('admin_national_id'); ?></label>
                     <input type="text" name="national_id" class="form-control"
-                           value="<?php echo $update_row['national_id'] ?? ''; ?>" placeholder="Enter National ID if any">
+                              value="<?php echo $update_row['national_id'] ?? ''; ?>" placeholder="<?php echo __('admin_enter_nid_if_any'); ?>">
                 </div>
                 <div class="form-group">
-                    <label>Passport Number</label>
+                          <label><?php echo __('admin_passport_number'); ?></label>
                     <input type="text" name="passport_number" class="form-control"
-                           value="<?php echo $update_row['passport_number'] ?? ''; ?>" placeholder="Enter Passport No if any">
+                              value="<?php echo $update_row['passport_number'] ?? ''; ?>" placeholder="<?php echo __('admin_enter_passport_if_any'); ?>">
                 </div>
                 <div class="form-group">
-                    <label>Driving License Number</label>
+                          <label><?php echo __('admin_driving_license_number'); ?></label>
                     <input type="text" name="driving_license_number" class="form-control"
-                           value="<?php echo $update_row['driving_license_number'] ?? ''; ?>" placeholder="Enter Driving License No if any">
+                              value="<?php echo $update_row['driving_license_number'] ?? ''; ?>" placeholder="<?php echo __('admin_enter_driving_if_any'); ?>">
                 </div>
             </div>
 
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>Phone</label>
+                          <label><?php echo __('phone'); ?></label>
                     <input type="text" name="phone" class="form-control"
-                           value="<?php echo $update_row['phone'] ?? ''; ?>" placeholder="Enter phone">
+                              value="<?php echo $update_row['phone'] ?? ''; ?>" placeholder="<?php echo __('admin_enter_phone'); ?>">
                 </div>
                 <div class="form-group">
-                    <label>Email</label>
+                          <label><?php echo __('email'); ?></label>
                     <input type="email" name="email" class="form-control"
-                           value="<?php echo $update_row['email'] ?? ''; ?>" placeholder="Enter email">
+                              value="<?php echo $update_row['email'] ?? ''; ?>" placeholder="<?php echo __('admin_enter_email'); ?>">
                 </div>
                 <div class="form-group">
-                    <label>Address</label>
+                          <label><?php echo __('admin_address'); ?></label>
                     <input type="text" name="address" class="form-control"
-                           value="<?php echo $update_row['address'] ?? ''; ?>" placeholder="Enter address">
+                              value="<?php echo $update_row['address'] ?? ''; ?>" placeholder="<?php echo __('admin_enter_address'); ?>">
                 </div>
                 <div class="form-group">
-                    <label>Marital Status</label>
+                          <label><?php echo __('admin_marital_status'); ?></label>
                     <select name="marital_status" class="form-control">
-                        <option value="Single" <?php if(($update_row['marital_status'] ?? '')=='Single') echo 'selected'; ?>>Single</option>
-                        <option value="Married" <?php if(($update_row['marital_status'] ?? '')=='Married') echo 'selected'; ?>>Married</option>
-                        <option value="Widowed" <?php if(($update_row['marital_status'] ?? '')=='Widowed') echo 'selected'; ?>>Widowed</option>
-                        <option value="Divorced" <?php if(($update_row['marital_status'] ?? '')=='Divorced') echo 'selected'; ?>>Divorced</option>
-                        <option value="Other" <?php if(($update_row['marital_status'] ?? '')=='Other') echo 'selected'; ?>>Other</option>
+                           <option value="Single" <?php if(($update_row['marital_status'] ?? '')=='Single') echo 'selected'; ?>><?php echo __('admin_single'); ?></option>
+                           <option value="Married" <?php if(($update_row['marital_status'] ?? '')=='Married') echo 'selected'; ?>><?php echo __('admin_married'); ?></option>
+                           <option value="Widowed" <?php if(($update_row['marital_status'] ?? '')=='Widowed') echo 'selected'; ?>><?php echo __('admin_widowed'); ?></option>
+                           <option value="Divorced" <?php if(($update_row['marital_status'] ?? '')=='Divorced') echo 'selected'; ?>><?php echo __('admin_divorced'); ?></option>
+                           <option value="Other" <?php if(($update_row['marital_status'] ?? '')=='Other') echo 'selected'; ?>><?php echo __('admin_other'); ?></option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Father's Name</label>
+                          <label><?php echo __('admin_father_name'); ?></label>
                     <input type="text" name="father_name" class="form-control"
-                           value="<?php echo $update_row['father_name'] ?? ''; ?>" placeholder="Enter father-names">
+                              value="<?php echo $update_row['father_name'] ?? ''; ?>" placeholder="<?php echo __('admin_enter_father_name'); ?>">
                 </div>
                 <div class="form-group">
-                    <label>Mother's Name</label>
+                          <label><?php echo __('admin_mother_name'); ?></label>
                     <input type="text" name="mother_name" class="form-control"
-                           value="<?php echo $update_row['mother_name'] ?? ''; ?>" placeholder="Enter mother-names">
+                              value="<?php echo $update_row['mother_name'] ?? ''; ?>" placeholder="<?php echo __('admin_enter_mother_name'); ?>">
                 </div>
                 <div class="form-group">
-                    <label>Provisional Driving Number</label>
+                          <label><?php echo __('admin_provisional_driving_number'); ?></label>
                     <input type="text" name="provisional_driving_number" class="form-control"
-                           value="<?php echo $update_row['provisional_driving_number'] ?? ''; ?>" placeholder="Enter Provisional Driving No if any">
+                              value="<?php echo $update_row['provisional_driving_number'] ?? ''; ?>" placeholder="<?php echo __('admin_enter_provisional_if_any'); ?>">
                 </div>
                 
                 <div class="form-group">
-                    <label>Passport Image</label>
+                          <label><?php echo __('admin_passport_image'); ?></label>
                     <input type="file" name="passport_image" class="form-control">
                     <?php if(!empty($update_row['passport_image'])): ?>
                         <img src="passports/<?php echo $update_row['passport_image']; ?>" alt="passport" width="100" class="mt-2">
@@ -236,25 +236,25 @@ $all_citizens = @mysqli_query($conn, "SELECT * FROM citizensregistry ORDER BY cr
         </div>
 
         <button type="submit" name="savecitizen" class="btn btn-primary btn-block mt-3">
-            <?php echo $update_row ? 'Update Citizen' : 'Register Citizen'; ?>
+            <?php echo $update_row ? __('admin_update_citizen') : __('admin_register_citizen'); ?>
         </button>
     </form>
 
     <hr>
 
     <!-- List of Registered Citizens -->
-    <h4 class="mt-4">Registered Citizens</h4>
+    <h4 class="mt-4"><?php echo __('admin_registered_citizens'); ?></h4>
     <table class="table table-bordered mt-3">
         <thead>
             <tr>
                 <th>#</th>
-                <th>Full Name</th>
-                <th>Gender</th>
-                <th>DOB</th>
-                <th>National ID</th>
-                <th>Passport No</th>
-                <th>Driving No</th>
-                <th>Actions</th>
+                <th><?php echo __('full_name'); ?></th>
+                <th><?php echo __('gender'); ?></th>
+                <th><?php echo __('dob'); ?></th>
+                <th><?php echo __('admin_national_id'); ?></th>
+                <th><?php echo __('admin_passport_no'); ?></th>
+                <th><?php echo __('admin_driving_no'); ?></th>
+                <th><?php echo __('actions'); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -270,7 +270,7 @@ $all_citizens = @mysqli_query($conn, "SELECT * FROM citizensregistry ORDER BY cr
                         <td>{$citizen['passport_number']}</td>
                         <td>{$citizen['driving_license_number']}</td>
                         <td>
-                            <a href='?edit_id={$citizen['id']}' class='btn btn-sm btn-warning'>Edit</a>
+                            <a href='?edit_id={$citizen['id']}' class='btn btn-sm btn-warning'>" . __('admin_edit') . "</a>
                         </td>
                       </tr>";
                 $i++;

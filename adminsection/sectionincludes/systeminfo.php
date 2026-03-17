@@ -5,7 +5,7 @@ $row = mysqli_fetch_assoc($result);
 
 <section class="ftco-section services-section">
 <div class="container">
-    <h3 class="mb-4 text-center">System info</h3>
+    <h3 class="mb-4 text-center"><?php echo __('admin_system_info'); ?></h3>
 
     <form method="POST" enctype="multipart/form-data">
 
@@ -17,28 +17,28 @@ $row = mysqli_fetch_assoc($result);
             <input type="hidden" name="id" value="<?php echo $row['id'] ?? ''; ?>">
 
             <div class="form-group">
-                <label>System Name</label>
+                <label><?php echo __('admin_system_name'); ?></label>
                 <input type="text" name="name" class="form-control"
-                       placeholder="Enter system name"
+                       placeholder="<?php echo __('admin_enter_system_name'); ?>"
                        value="<?php echo $row['name'] ?? ''; ?>" required>
             </div>
 
             <div class="form-group">
-                <label>Terms of use</label>
+                <label><?php echo __('terms_of_use'); ?></label>
                 <textarea name="termsofuse" class="form-control" rows="10"
-                    placeholder="Terms of use"><?php echo $row['termsofuse'] ?? ''; ?></textarea>
+                    placeholder="<?php echo __('terms_of_use'); ?>"><?php echo $row['termsofuse'] ?? ''; ?></textarea>
             </div>
 
                         <div class="form-group">
-                <label>Privacy policy</label>
+                <label><?php echo __('privacy_policy'); ?></label>
                 <textarea name="privacypolicy" class="form-control" rows="10"
-                    placeholder="privacypolicy"><?php echo $row['privacypolicy'] ?? ''; ?></textarea>
+                    placeholder="<?php echo __('privacy_policy'); ?>"><?php echo $row['privacypolicy'] ?? ''; ?></textarea>
             </div>
 
                                     <div class="form-group">
-                <label>About system</label>
+                <label><?php echo __('admin_about_system'); ?></label>
                 <textarea name="aboutsystem" class="form-control" rows="10"
-                    placeholder="aboutsystem"><?php echo $row['aboutsystem'] ?? ''; ?></textarea>
+                    placeholder="<?php echo __('admin_about_system'); ?>"><?php echo $row['aboutsystem'] ?? ''; ?></textarea>
             </div>
 
         </div>
@@ -59,19 +59,19 @@ $row = mysqli_fetch_assoc($result);
             }
 
             $imageFields = [
-                'icon' => 'Favicon / Icon',
-                'logo' => 'Logo',
-                'nationalid' => 'Sample (National Id)',
-                'drivinglicense' => 'Sample (Driving License)',
-                'passport' => 'Sample (Passport)',
-                'marriagecertificate' => 'Sample (Marriage Certificate)',
-                'goodconduct' => 'Sample (Good Conduct)',
-                'provisionaldriving' => 'Sample (Provisional Driving)'
+                'icon' => __('admin_favicon_icon'),
+                'logo' => __('admin_logo'),
+                'nationalid' => __('admin_sample_national_id'),
+                'drivinglicense' => __('admin_sample_driving_license'),
+                'passport' => __('admin_sample_passport'),
+                'marriagecertificate' => __('admin_sample_marriage_certificate'),
+                'goodconduct' => __('admin_sample_good_conduct'),
+                'provisionaldriving' => __('admin_sample_provisional_driving')
             ];
 
             foreach($imageFields as $field => $label){
                 echo '<div class="form-group mb-4">
-                        <label>Upload '.$label.'</label>
+                    <label>'.__('admin_upload').' '.$label.'</label>
                         <input type="file" name="'.$field.'" class="form-control">
                     </div>';
             }
@@ -81,7 +81,7 @@ $row = mysqli_fetch_assoc($result);
     </div>
 
     <button type="submit" name="saveupdateabout" class="btn btn-primary btn-block mt-3">
-        Save info
+        <?php echo __('admin_save_info'); ?>
     </button>
 
     </form>
@@ -90,7 +90,7 @@ $row = mysqli_fetch_assoc($result);
          IMAGE PREVIEW CARDS AT END
          ========================= -->
     <hr class="my-4">
-    <h4 class="mb-3">Current Uploaded Images</h4>
+    <h4 class="mb-3"><?php echo __('admin_current_uploaded_images'); ?></h4>
     <div class="row">
         <?php
         foreach($imageFields as $field => $label){

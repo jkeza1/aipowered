@@ -1,4 +1,9 @@
 <?php
+$langFile = __DIR__ . '/../../backendcodes/language.php';
+if (file_exists($langFile)) {
+  include_once $langFile;
+}
+
 $result = mysqli_query($conn, "SELECT * FROM systeminfo ORDER BY id ASC LIMIT 1");
 $row = mysqli_fetch_assoc($result);
 

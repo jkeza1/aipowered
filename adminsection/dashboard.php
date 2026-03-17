@@ -29,7 +29,7 @@ include 'sectionincludes/jslink.php';
 function scrollToApplication(appId) {
     const row = document.getElementById('form-' + appId);
     if (!row) {
-        alert("Application #" + appId + " not found in this view.");
+        alert("<?php echo __('admin_application_not_found_in_view'); ?> #" + appId);
         return;
     }
 

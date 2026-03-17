@@ -5,7 +5,7 @@ $row = mysqli_fetch_assoc($result);
 
 <section class="ftco-section services-section">
 <div class="container">
-    <h3 class="mb-4 text-center">Setting - Application for National ID</h3>
+    <h3 class="mb-4 text-center"><?php echo __('admin_setting_national_id'); ?></h3>
 
     <form method="POST">
     <input type="hidden" name="id" value="<?php echo $row['id'] ?? ''; ?>">
@@ -16,19 +16,19 @@ $row = mysqli_fetch_assoc($result);
         <div class="col-md-6">
 
             <div class="form-group">
-                <label>Service Name</label>
+                <label><?php echo __('admin_service_name'); ?></label>
                 <input type="text" name="service_name" class="form-control"
                        value="<?php echo $row['service_name'] ?? ''; ?>" required>
             </div>
 
             <div class="form-group">
-                <label>About this Service</label>
+                <label><?php echo __('admin_about_this_service'); ?></label>
                 <textarea name="description" class="form-control" rows="6"
                     required><?php echo $row['description'] ?? ''; ?></textarea>
             </div>
 
             <div class="form-group">
-                <label>Requirements</label>
+                <label><?php echo __('admin_requirements'); ?></label>
                 <textarea name="requirements" class="form-control" rows="5"><?php echo $row['requirements'] ?? ''; ?></textarea>
             </div>
 
@@ -38,37 +38,37 @@ $row = mysqli_fetch_assoc($result);
         <div class="col-md-6">
 
             <div class="form-group">
-                <label>Processing Time</label>
+                <label><?php echo __('admin_processing_time'); ?></label>
                 <input type="text" name="processing_time" class="form-control"
                        value="<?php echo $row['processing_time'] ?? ''; ?>"
-                       placeholder="Example: 30 Days">
+                       placeholder="<?php echo __('admin_example_30_days'); ?>">
             </div>
 
             <div class="form-group">
-                <label>Price</label>
+                <label><?php echo __('admin_price'); ?></label>
                 <input type="number" name="price" class="form-control"
                        value="<?php echo $row['price'] ?? ''; ?>"
                        placeholder="500">
             </div>
 
             <div class="form-group">
-                <label>Currency</label>
+                <label><?php echo __('admin_currency'); ?></label>
                 <input type="text" name="currency" class="form-control"
                        value="<?php echo $row['currency'] ?? 'RWF'; ?>">
             </div>
 
             <div class="form-group">
-                <label>Provided By</label>
+                <label><?php echo __('admin_provided_by'); ?></label>
                 <input type="text" name="provided_by" class="form-control"
                        value="<?php echo $row['provided_by'] ?? ''; ?>"
                        placeholder="NIDA">
             </div>
 
             <div class="form-group">
-                <label>Status</label>
+                <label><?php echo __('status'); ?></label>
                 <select name="status" class="form-control">
-                    <option value="Active" <?php if(($row['status'] ?? '')=='Active') echo 'selected'; ?>>Active</option>
-                    <option value="Inactive" <?php if(($row['status'] ?? '')=='Inactive') echo 'selected'; ?>>Inactive</option>
+                    <option value="Active" <?php if(($row['status'] ?? '')=='Active') echo 'selected'; ?>><?php echo __('admin_active'); ?></option>
+                    <option value="Inactive" <?php if(($row['status'] ?? '')=='Inactive') echo 'selected'; ?>><?php echo __('admin_inactive'); ?></option>
                 </select>
             </div>
 
@@ -77,7 +77,7 @@ $row = mysqli_fetch_assoc($result);
     </div>
 
     <button type="submit" name="saveservice" class="btn btn-primary btn-block mt-3">
-        Save Service
+        <?php echo __('admin_save_service'); ?>
     </button>
 
     </form>

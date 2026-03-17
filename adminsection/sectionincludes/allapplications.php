@@ -70,9 +70,9 @@ if(isset($_POST['ai_compare'])){
     if(!$foundPath){
         // Provide more debugging info if file not found
         echo "<div class='alert alert-danger font-monospace' style='font-size: 0.8rem;'>
-                <strong>Document Not Found!</strong><br>
-                Post Data: " . htmlspecialchars($imagePath) . "<br>
-                Looked in:<br>
+                                <strong>" . __('admin_document_not_found') . "</strong><br>
+                                " . __('admin_post_data') . ": " . htmlspecialchars($imagePath) . "<br>
+                                " . __('admin_looked_in') . ":<br>
                 - " . implode("<br>- ", $possiblePaths) . "
               </div>";
         exit();
@@ -109,7 +109,7 @@ if(isset($_POST['ai_compare'])){
     curl_close($ch);
 
     if ($err) {
-        echo "<div class='alert alert-danger'>Connection Error: $err</div>";
+        echo "<div class='alert alert-danger'>" . __('admin_connection_error') . ": $err</div>";
     } else {
         $result = json_decode($response, true);
 
@@ -121,66 +121,66 @@ if(isset($_POST['ai_compare'])){
             echo "
             <div class='card shadow-sm border-0'>
                 <div class='card-header bg-dark text-white d-flex justify-content-between align-items-center'>
-                    <span class='fw-bold'>Forensic Analysis Report</span>
-                    <span class='badge " . ($isAuthentic ? 'bg-success' : 'bg-danger') . "'>$verdictIcon Local AI Scan</span>
+                    <span class='fw-bold'>" . __('admin_forensic_analysis_report') . "</span>
+                    <span class='badge " . ($isAuthentic ? 'bg-success' : 'bg-danger') . "'>$verdictIcon " . __('admin_local_ai_scan') . "</span>
                 </div>
                 <div class='card-body p-4'>
                     <div class='text-center mb-4'>
-                        <h2 class='$statusClass fw-bold mb-1'>Verdict: {$result['status']}</h2>
-                        <p class='text-muted'>$verdictIcon Identity & Forgery Check Complete</p>
+                        <h2 class='$statusClass fw-bold mb-1'>" . __('admin_verdict') . ": {$result['status']}</h2>
+                        <p class='text-muted'>$verdictIcon " . __('admin_identity_forgery_check_complete') . "</p>
                     </div>
 
                     <div class='row g-4'>
                         <!-- Left Column: Credential Matching -->
                         <div class='col-md-6 border-end'>
-                            <h6 class='text-uppercase fw-bold text-primary mb-3'><i class='fas fa-user-check me-2'></i>Identity Verification</h6>
+                            <h6 class='text-uppercase fw-bold text-primary mb-3'><i class='fas fa-user-check me-2'></i>" . __('admin_identity_verification') . "</h6>
                             <ul class='list-group list-group-flush'>
                                 <li class='list-group-item d-flex justify-content-between align-items-center px-0'>
-                                    Person Match (Name)
-                                    <span>" . ($result['ocr_forensics']['name_match_score'] >= 70 ? "<span class='text-success'>MATCH ({$result['ocr_forensics']['name_match_score']}%)</span>" : "<span class='text-danger'>MISMATCH</span>") . "</span>
+                                    " . __('admin_person_match_name') . "
+                                    <span>" . ($result['ocr_forensics']['name_match_score'] >= 70 ? "<span class='text-success'>" . __('admin_match') . " ({$result['ocr_forensics']['name_match_score']}%)</span>" : "<span class='text-danger'>" . __('admin_mismatch') . "</span>") . "</span>
                                 </li>
                                 <li class='list-group-item d-flex justify-content-between align-items-center px-0'>
-                                    National ID Match
-                                    <span>" . ($result['ocr_forensics']['id_match'] ? "<span class='text-success'>MATCH</span>" : "<span class='text-danger'>NOT FOUND</span>") . "</span>
+                                    " . __('admin_national_id_match') . "
+                                    <span>" . ($result['ocr_forensics']['id_match'] ? "<span class='text-success'>" . __('admin_match') . "</span>" : "<span class='text-danger'>" . __('admin_not_found') . "</span>") . "</span>
                                 </li>
                                 <li class='list-group-item d-flex justify-content-between align-items-center px-0'>
-                                    Document Type (Expected)
+                                    " . __('admin_document_type_expected') . "
                                     <span class='text-dark fw-bold'>" . ucfirst($expectedType) . "</span>
                                 </li>
                                 <li class='list-group-item d-flex justify-content-between align-items-center px-0'>
-                                    Document Type (Detected)
-                                    <span>" . ($result['ocr_forensics']['type_match'] ? "<span class='text-success'>" . ucfirst($result['ocr_forensics']['doc_type_detected']) . "</span>" : "<span class='text-danger'>WRONG TYPE</span>") . "</span>
+                                    " . __('admin_document_type_detected') . "
+                                    <span>" . ($result['ocr_forensics']['type_match'] ? "<span class='text-success'>" . ucfirst($result['ocr_forensics']['doc_type_detected']) . "</span>" : "<span class='text-danger'>" . __('admin_wrong_type') . "</span>") . "</span>
                                 </li>
                             </ul>
                         </div>
 
                         <!-- Right Column: Forgery Analysis -->
                         <div class='col-md-6 px-4'>
-                            <h6 class='text-uppercase fw-bold text-primary mb-3'><i class='fas fa-microscope me-2'></i>Forensic Integrity</h6>
+                            <h6 class='text-uppercase fw-bold text-primary mb-3'><i class='fas fa-microscope me-2'></i>" . __('admin_forensic_integrity') . "</h6>
                             <div class='progress mb-3' style='height: 25px;'>
                                 <div class='progress-bar " . ($result['digital_integrity'] > 50 ? 'bg-success' : 'bg-danger') . "' 
                                      role='progressbar' style='width: {$result['digital_integrity']}%'>
-                                     Digital Integrity: {$result['digital_integrity']}%
+                                     " . __('admin_digital_integrity') . ": {$result['digital_integrity']}%
                                 </div>
                             </div>
                             
-                            <p class='small text-muted mb-2 fw-bold'>Tampering Heatmap (Grad-CAM):</p>
+                            <p class='small text-muted mb-2 fw-bold'>" . __('admin_tampering_heatmap') . "</p>
                             <div class='position-relative'>
                                 <a href='{$result['heatmap_url']}' target='_blank'>
                                     <img src='{$result['heatmap_url']}' class='img-fluid border rounded shadow-sm' style='max-height:180px; width:100%; object-fit:cover;'>
-                                    <div class='position-absolute bottom-0 end-0 bg-dark text-white p-1 small opacity-75'>Click to enlarge</div>
+                                    <div class='position-absolute bottom-0 end-0 bg-dark text-white p-1 small opacity-75'>" . __('admin_click_to_enlarge') . "</div>
                                 </a>
                             </div>
                         </div>
                     </div>
 
                     <div class='mt-4 p-3 bg-light rounded border-start border-4 " . ($isAuthentic ? 'border-success' : 'border-danger') . "'>
-                        <strong> Summary:</strong> <span class='text-muted'>{$result['explanation']}</span>
+                        <strong>" . __('admin_summary') . ":</strong> <span class='text-muted'>{$result['explanation']}</span>
                     </div>
                 </div>
             </div>";
         } else {
-            echo "<div class='alert alert-danger'>AI Backend Error: " . ($result['error'] ?? 'Unknown error') . "</div>";
+            echo "<div class='alert alert-danger'>" . __('admin_ai_backend_error') . ": " . ($result['error'] ?? __('admin_unknown_error')) . "</div>";
         }
     }
     exit();
@@ -195,7 +195,7 @@ if(isset($_POST['resolve_appeal'])){
     
     // Determine the redirect URL based on current script
     $current_file = basename($_SERVER['PHP_SELF']);
-    echo "<script>alert('Appeal marked as resolved.'); window.location.href='$current_file';</script>";
+    echo "<script>alert('" . __('admin_appeal_marked_resolved') . "'); window.location.href='$current_file';</script>";
 }
 
 /* -----------------------------
@@ -270,8 +270,8 @@ try {
 
         echo "<script>
         swal({
-            title: 'Success!',
-            text: 'Status updated and email sent to applicant.',
+            title: '" . __('admin_success') . "',
+            text: '" . __('admin_status_updated_email_sent') . "',
             icon: 'success',
             button: 'OK'
         });
@@ -280,8 +280,8 @@ try {
     } else {
         echo "<script>
         swal({
-            title: 'Status Updated!',
-            text: 'Email not sent: invalid email address.',
+            title: '" . __('admin_status_updated') . "',
+            text: '" . __('admin_email_not_sent_invalid') . "',
             icon: 'warning',
             button: 'OK'
         });
@@ -291,8 +291,8 @@ try {
 } catch (Exception $e) {
     echo "<script>
     swal({
-        title: 'Status Updated!',
-        text: 'Email could not be sent. Error: {$mail->ErrorInfo}',
+        title: '" . __('admin_status_updated') . "',
+        text: '" . __('admin_email_could_not_be_sent') . ": {$mail->ErrorInfo}',
         icon: 'warning',
         button: 'OK'
     });
@@ -415,7 +415,7 @@ ORDER BY application_date DESC
 
 <section class="p-4" style="margin-top:60px;">
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4>All Applications (Admin Panel)</h4>
+    <h4><?php echo __('admin_all_applications_panel'); ?></h4>
     
 </div>
 
@@ -423,12 +423,12 @@ ORDER BY application_date DESC
 <table class="table table-bordered table-striped">
 <thead>
 <tr>
-<th>ID</th>
-<th>Type</th>
-<th>Date</th>
-<th>Status</th>
-<th>Documents</th>
-<th>Actions</th>
+<th><?php echo __('admin_id'); ?></th>
+<th><?php echo __('admin_type'); ?></th>
+<th><?php echo __('date'); ?></th>
+<th><?php echo __('status'); ?></th>
+<th><?php echo __('documents'); ?></th>
+<th><?php echo __('actions'); ?></th>
 </tr>
 </thead>
 <tbody>
@@ -443,11 +443,11 @@ $formId = safe_id($row['type'], $row['id']);
 <td><?= $row['application_date']; ?></td>
 <td>
 <?php
-if($status=='pending') echo "<span class='text-warning fw-bold'>Pending</span>";
-elseif($status=='approved') echo "<span class='text-success fw-bold'>Approved</span>";
-elseif($status=='rejected') echo "<span class='text-danger fw-bold'>Rejected</span>";
-elseif($status=='denied') echo "<span class='text-dark fw-bold'>Denied</span>";
-elseif($status=='cancelled') echo "<span class='text-dark fw-bold'>Cancelled</span>";
+if($status=='pending') echo "<span class='text-warning fw-bold'>" . __('pending') . "</span>";
+elseif($status=='approved') echo "<span class='text-success fw-bold'>" . __('approved') . "</span>";
+elseif($status=='rejected') echo "<span class='text-danger fw-bold'>" . __('rejected') . "</span>";
+elseif($status=='denied') echo "<span class='text-dark fw-bold'>" . __('admin_denied') . "</span>";
+elseif($status=='cancelled') echo "<span class='text-dark fw-bold'>" . __('cancelled') . "</span>";
 ?>
 </td>
 <td>
@@ -486,9 +486,9 @@ if($status!='cancelled')
 
             <div class="text-start">
 
-                <div style="color: #333; font-weight: 500; font-size: 0.75rem; line-height: 1.2;">AI Forensics</div>
+                <div style="color: #333; font-weight: 500; font-size: 0.75rem; line-height: 1.2;"><?php echo __('admin_ai_forensics'); ?></div>
 
-                <div class="text-muted" style="font-size: 0.6rem;">Deep Analysis</div>
+                <div class="text-muted" style="font-size: 0.6rem;"><?php echo __('admin_deep_analysis'); ?></div>
 
             </div>
 
@@ -508,8 +508,8 @@ if($status!='cancelled')
     <div class="d-flex align-items-center justify-content-center p-2 rounded-3 border border-success-subtle bg-success-subtle shadow-sm flex-grow-1" 
          style="border-radius: 8px !important; border-left: 4px solid #198754 !important; max-width: 160px; height: 45px;">
         <div class="text-center">
-            <div class="text-success fw-bold" style="font-size: 0.65rem; line-height: 1;"><i class="fas fa-shield-alt me-1"></i> OFFICIAL</div>
-            <div class="text-success-emphasis" style="font-size: 0.55rem;">VERIFIED</div>
+            <div class="text-success fw-bold" style="font-size: 0.65rem; line-height: 1;"><i class="fas fa-shield-alt me-1"></i> <?php echo __('admin_official'); ?></div>
+            <div class="text-success-emphasis" style="font-size: 0.55rem;"><?php echo __('admin_verified'); ?></div>
         </div>
     </div>
     <?php endif; ?>
@@ -525,8 +525,8 @@ if($status!='cancelled')
                 onclick="event.stopPropagation();"
                 data-form-id="<?= $formId; ?>">
             <div class="text-start">
-                <div style="color: #333; font-weight: 500; font-size: 0.75rem; line-height: 1.2;">Review Case</div>
-                <div class="text-muted" style="font-size: 0.6rem;">Manual Audit</div>
+                <div style="color: #333; font-weight: 500; font-size: 0.75rem; line-height: 1.2;"><?php echo __('admin_review_case'); ?></div>
+                <div class="text-muted" style="font-size: 0.6rem;"><?php echo __('admin_manual_audit'); ?></div>
             </div>
             <div class="text-dark" style="font-size: 0.8rem;">
                 <i class="fa fa-eye"></i>
@@ -550,7 +550,7 @@ if(isset($service_mappings[$row['type']])){
 
 <?php if($details): ?>
 <div class="card mb-3">
-<div class="card-header bg-light fw-bold">Application Details</div>
+<div class="card-header bg-light fw-bold"><?php echo __('admin_application_details'); ?></div>
 <div class="card-body">
 <div class="row">
 <?php foreach($details as $field=>$value): ?>
@@ -584,13 +584,13 @@ if($status!='cancelled')
 <input type="hidden" name="app_type" value="<?= $row['type']; ?>">
 <input type="hidden" name="new_status">
 <div class="mb-3">
-<label>Reason</label>
+<label><?php echo __('admin_reason'); ?></label>
 <textarea name="reason" class="form-control" required></textarea>
 </div>
-<button type="submit" name="update_status" class="btn btn-success" onclick="this.form.new_status.value='Approved'">Approve</button>
-<button type="submit" name="update_status" class="btn btn-danger" onclick="this.form.new_status.value='Rejected'">Reject</button>
-<button type="submit" name="update_status" class="btn btn-dark" onclick="this.form.new_status.value='Denied'">Deny</button>
-<button type="button" class="btn btn-secondary close-form-btn">Close</button>
+<button type="submit" name="update_status" class="btn btn-success" onclick="this.form.new_status.value='Approved'"><?php echo __('admin_approve'); ?></button>
+<button type="submit" name="update_status" class="btn btn-danger" onclick="this.form.new_status.value='Rejected'"><?php echo __('admin_reject'); ?></button>
+<button type="submit" name="update_status" class="btn btn-dark" onclick="this.form.new_status.value='Denied'"><?php echo __('admin_deny'); ?></button>
+<button type="button" class="btn btn-secondary close-form-btn"><?php echo __('close'); ?></button>
 </form>
 <?php
 }
@@ -602,7 +602,7 @@ if($status!='cancelled')
 </tbody>
 </table>
 <?php else: ?>
-<p>No applications found.</p>
+<p><?php echo __('admin_no_applications_found'); ?></p>
 <?php endif; ?>
 </section>
 
@@ -611,14 +611,14 @@ if($status!='cancelled')
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">AI Document Analysis</h5>
-        <button type="button" class="btn-close" id="closeAiModal" aria-label="Close"> Close</button>
+        <h5 class="modal-title"><?php echo __('admin_ai_document_analysis'); ?></h5>
+        <button type="button" class="btn-close" id="closeAiModal" aria-label="Close"> <?php echo __('close'); ?></button>
       </div>
       <div class="modal-body">
         <div id="aiResult">
           <center>
             <div class="spinner-border"></div>
-            <p>Analyzing document...</p>
+            <p><?php echo __('admin_analyzing_document'); ?></p>
           </center>
         </div>
       </div>
@@ -679,7 +679,7 @@ document.addEventListener("DOMContentLoaded", function(){
             let type=this.dataset.type;
             let name=this.dataset.name;
             let id=this.dataset.id;
-            document.getElementById('aiResult').innerHTML="<center><div class='spinner-border'></div><p>Analyzing...</p></center>";
+            document.getElementById('aiResult').innerHTML="<center><div class='spinner-border'></div><p><?php echo __('admin_analyzing'); ?>...</p></center>";
             aiModal.show();
             fetch("",{
                 method:"POST",
