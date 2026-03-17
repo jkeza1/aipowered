@@ -9,43 +9,43 @@
 
                         <!-- Title -->
                         <div class="text-center mb-4">
-                            <h4 class="mb-1">IremboAccount</h4>
-                            <p class="mb-0">Sign in with IremboAccount</p>
+                            <h4 class="mb-1"><?php echo __('irembo_account'); ?></h4>
+                            <p class="mb-0"><?php echo __('sign_in_with'); ?></p>
                             <small class="text-muted">
-                                Please enter your details to continue
+                                <?php echo __('please_enter_details'); ?>
                             </small>
                         </div>
 
                         <!-- Switch Buttons -->
                         <div class="d-flex justify-content-center mb-3">
-                            <button type="button" class="btn btn-outline-primary me-2" onclick="showPhone()">Use phone number</button>
-                            <button type="button" class="btn btn-outline-secondary" onclick="showEmail()">Use email</button>
+                            <button type="button" class="btn btn-outline-primary me-2" onclick="showPhone()"><?php echo __('use_phone'); ?></button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="showEmail()"><?php echo __('use_email'); ?></button>
                         </div>
 
     <form method="POST">
 
     <!-- Phone Field -->
 <div class="mb-3" id="phoneField">
-    <label class="form-label">Phone Number</label>
-    <input type="text" name="phone" class="form-control" placeholder="Enter phone number (+2507XXXXXXXX)"
+    <label class="form-label"><?php echo __('phone_number'); ?></label>
+    <input type="text" name="phone" class="form-control" placeholder="<?php echo __('enter_phone'); ?>"
         pattern="^\+2507[0-9]{8}$" value="+250" 
         title="Phone number must start with +2507 and contain 12 digits (example: +2507XXXXXXXX)">
 </div>
 
 <!-- Email Field -->
 <div class="mb-3 d-none" id="emailField">
-    <label class="form-label">Email Address</label>
-    <input type="email" name="email" class="form-control rounded" placeholder="Enter your email address">
+    <label class="form-label"><?php echo __('email_address'); ?></label>
+    <input type="email" name="email" class="form-control rounded" placeholder="<?php echo __('enter_email'); ?>">
 </div>
 
     <!-- Password -->
     <div class="mb-3">
-        <label class="form-label">Password</label>
-        <input type="password" name="password" id="password" class="form-control" placeholder="Enter your password">
+        <label class="form-label"><?php echo __('password'); ?></label>
+        <input type="password" name="password" id="password" class="form-control" placeholder="<?php echo __('password'); ?>">
     </div>
 
     <div class="d-grid">
-        <button type="submit" name="login" class="btn btn-primary rounded">Sign In</button>
+        <button type="submit" name="login" class="btn btn-primary rounded"><?php echo __('sign_in'); ?></button>
     </div>
 
 </form>
@@ -53,17 +53,17 @@
                         <!-- Terms -->
                         <div class="text-center mt-4">
                             <small class="text-muted">
-                                By logging in, you agree to our 
-                                <a href="terms.php">Terms of Use</a> and 
-                                <a href="privacy.php">Privacy Policy</a>.
+                                <?php echo __('login_agree'); ?>
+                                <a href="terms.php"><?php echo __('terms_of_use'); ?></a> <?php echo __('and'); ?>
+                                <a href="privacy.php"><?php echo __('privacy_policy'); ?></a>.
                             </small>
                         </div>
 
                         <!-- Register -->
                         <div class="text-center mt-3">
                             <small>
-                                Don’t have an account? 
-                                <a href="signup.php"><strong>Create Account</strong></a>
+                                <?php echo __('no_account'); ?>
+                                <a href="signup.php"><strong><?php echo __('create_account'); ?></strong></a>
                             </small>
                         </div>
 

@@ -23,7 +23,7 @@ if(isset($_SESSION['user_id'])){
 <div class="top-bar bg-warning text-dark p-4">
     <div class="container text-center ">
         <small class="fw-semibold ">
-            <i class="fa fa-bell me-1 text-primary"></i> <b>New!</b> The fiscal year 2025/2026 has started. Pay for your family’s mutuelle coverage
+            <i class="fa fa-bell me-1 text-primary"></i> <?php echo __('topbar_announcement'); ?>
         </small>
     </div>
 </div>
@@ -85,7 +85,7 @@ if(isset($_SESSION['user_id'])){
                                 </li>
                             <?php else: ?>
                                 <!-- Other Pages (Home/index.php): Show My Applications, Manage Account, Logout -->
-                                <li><h6 class="dropdown-header border-bottom mb-2">My Account</h6></li>
+                                <li><h6 class="dropdown-header border-bottom mb-2"><?php echo __('my_account'); ?></h6></li>
                                 <li>
                                     <a class="dropdown-item py-2 text-dark" href="userdashboard.php">
                                         <i class="fa fa-list-alt me-2 text-primary"></i> <?php echo __('my_applications'); ?>
@@ -93,7 +93,7 @@ if(isset($_SESSION['user_id'])){
                                 </li>
                                 <li>
                                     <a class="dropdown-item py-2 text-dark" href="#" data-bs-toggle="modal" data-bs-target="#accountModal">
-                                        <i class="fa fa-user-cog me-2 text-secondary"></i> Manage My IremboAccount
+                                        <i class="fa fa-user-cog me-2 text-secondary"></i> <?php echo __('manage_my_irembo_account'); ?>
                                     </a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
@@ -118,14 +118,25 @@ if(isset($_SESSION['user_id'])){
                         ?>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
+                        <?php 
+                        $page = basename($_SERVER['PHP_SELF']);
+                        $query = $_GET;
+                        // Build URLs for switching languages
+                        $query['lang'] = 'en';
+                        $en_url = $page . '?' . http_build_query($query);
+                        $query['lang'] = 'rw';
+                        $rw_url = $page . '?' . http_build_query($query);
+                        $query['lang'] = 'fr';
+                        $fr_url = $page . '?' . http_build_query($query);
+                        ?>
                         <?php if($current_lang !== 'en'): ?>
-                        <li><a class="dropdown-item" href="?lang=en"><?php echo __('english'); ?></a></li>
+                        <li><a class="dropdown-item" href="<?= $en_url; ?>"><?php echo __('english'); ?></a></li>
                         <?php endif; ?>
                         <?php if($current_lang !== 'rw'): ?>
-                        <li><a class="dropdown-item" href="?lang=rw"><?php echo __('kinyarwanda'); ?></a></li>
+                        <li><a class="dropdown-item" href="<?= $rw_url; ?>"><?php echo __('kinyarwanda'); ?></a></li>
                         <?php endif; ?>
                         <?php if($current_lang !== 'fr'): ?>
-                        <li><a class="dropdown-item" href="?lang=fr"><?php echo __('french'); ?></a></li>
+                        <li><a class="dropdown-item" href="<?= $fr_url; ?>"><?php echo __('french'); ?></a></li>
                         <?php endif; ?>
                     </ul>
                 </li>
@@ -141,26 +152,26 @@ if(isset($_SESSION['user_id'])){
     <div class="modal-content">
       <form method="POST">
           <div class="modal-header">
-            <h5 class="modal-title" id="accountModalLabel">Update Profile</h5>
+            <h5 class="modal-title" id="accountModalLabel"><?php echo __('update_profile'); ?></h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
               <div class="mb-3">
-                  <label for="email" class="form-label">Email</label>
+                  <label for="email" class="form-label"><?php echo __('email'); ?></label>
                   <input type="email" class="form-control" name="email" readonly id="email" value="<?php echo $user_info['email'] ?? ''; ?>" required>
               </div>
               <div class="mb-3">
-                  <label for="phone" class="form-label">Phone</label>
+                  <label for="phone" class="form-label"><?php echo __('phone'); ?></label>
                   <input type="text" class="form-control" name="phone" readonly id="phone" value="<?php echo $user_info['phone'] ?? ''; ?>" required>
               </div>
               <div class="mb-3">
-                  <label for="password" class="form-label">Password (leave blank to keep current)</label>
+                  <label for="password" class="form-label"><?php echo __('password_leave_blank'); ?></label>
                   <input type="password" class="form-control" name="password" id="password">
               </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" name="update_profile" class="btn btn-primary">Save Changes</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" name="update_profile" class="btn btn-primary"><?php echo __('save_changes'); ?></button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?php echo __('close'); ?></button>
           </div>
       </form>
     </div>

@@ -9,10 +9,10 @@
 
                         <!-- Title -->
                         <div class="text-center mb-4">
-                            <h4 class="mb-1">Create IremboAccount</h4>
-                            <p class="mb-0">Sign up with IremboAccount</p>
+                            <h4 class="mb-1"><?php echo __('create_irembo_account'); ?></h4>
+                            <p class="mb-0"><?php echo __('signup_with_irembo_account'); ?></p>
                             <small class="text-muted">
-                                Please enter your details to continue
+                                <?php echo __('please_enter_details'); ?>
                             </small>
                         </div>
 
@@ -20,27 +20,27 @@
 
     <!-- Full Name Field -->
     <div class="mb-3">
-        <label class="form-label">Full Name *</label>
+        <label class="form-label"><?php echo __('full_name'); ?> *</label>
         <input type="text"
                name="full_name"
                class="form-control"
-               placeholder="Enter your full name"
+               placeholder="<?php echo __('enter_full_name'); ?>"
                required>
     </div>
 
     <!-- Gender Field -->
     <div class="mb-3">
-        <label class="form-label">Gender *</label>
+        <label class="form-label"><?php echo __('gender'); ?> *</label>
         <select name="gender" class="form-control" required>
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
+            <option value=""><?php echo __('select_gender'); ?></option>
+            <option value="Male"><?php echo __('male'); ?></option>
+            <option value="Female"><?php echo __('female'); ?></option>
         </select>
     </div>
 
     <!-- Date of Birth Field -->
     <div class="mb-3">
-        <label class="form-label">Date of Birth *</label>
+        <label class="form-label"><?php echo __('dob'); ?> *</label>
         <input type="date"
                name="dob"
                class="form-control"
@@ -49,11 +49,11 @@
 
     <!-- National ID Field -->
     <div class="mb-3">
-        <label class="form-label">National ID (16 digits) *</label>
+        <label class="form-label"><?php echo __('national_id_long'); ?> *</label>
         <input type="text"
                name="national_id"
                class="form-control"
-               placeholder="Enter your 16-digit National ID"
+               placeholder="<?php echo __('enter_national_id'); ?>"
                pattern="[0-9]{16}"
                title="National ID must be exactly 16 digits"
                required>
@@ -61,11 +61,11 @@
 
     <!-- Phone Field -->
     <div class="mb-3">
-        <label class="form-label">Phone Number *</label>
+        <label class="form-label"><?php echo __('phone_number'); ?> *</label>
         <input type="text"
                name="phone"
                class="form-control"
-               placeholder="Enter phone number (+2507XXXXXXXX)"
+               placeholder="<?php echo __('enter_phone'); ?>"
                pattern="^\+2507[0-9]{8}$"
                value="+250"
                title="Phone must start with +2507 and contain 12 digits (example: +2507XXXXXXXX)"
@@ -74,56 +74,54 @@
 
     <!-- Email Field -->
     <div class="mb-3">
-        <label class="form-label">Email Address *</label>
+        <label class="form-label"><?php echo __('email_address'); ?> *</label>
         <input type="email"
                name="email"
                class="form-control"
-               placeholder="Enter your email address"
+               placeholder="<?php echo __('enter_email'); ?>"
                required>
     </div>
 
     <!-- Password -->
     <div class="mb-3">
-        <label class="form-label">Password *</label>
+        <label class="form-label"><?php echo __('password'); ?> *</label>
         <input type="password"
                name="password"
                class="form-control"
-               placeholder="Create a password"
+               placeholder="<?php echo __('create_password'); ?>"
                required>
     </div>
 
     <!-- Confirm Password -->
     <div class="mb-3">
-        <label class="form-label">Confirm Password *</label>
+        <label class="form-label"><?php echo __('confirm_password'); ?> *</label>
         <input type="password"
                name="confirm_password"
                class="form-control"
-               placeholder="Confirm your password"
+               placeholder="<?php echo __('confirm_your_password'); ?>"
                required>
     </div>
 
-    <div class="d-grid">
-        <button type="submit" name="register" class="btn btn-primary">
-            Create Account
+    <!-- Submit Button -->
+    <div class="d-grid gap-2 mt-4">
+        <button type="submit" name="register" class="btn btn-primary py-2 fw-bold">
+            <?php echo __('register'); ?>
         </button>
     </div>
 
-</form>
+    <div class="text-center mt-3">
+        <p class="mb-0">
+            <?php echo __('already_have_account'); ?> 
+            <a href="login.php" class="fw-bold"><?php echo __('login_here'); ?></a>
+        </p>
+    </div>
 
                         <!-- Terms -->
                         <div class="text-center mt-4">
                             <small class="text-muted">
-                                By registering, you agree to our 
-                                 <a href="terms.php">Terms of Use</a> and 
-                                <a href="privacy.php">Privacy Policy</a>.
-                            </small>
-                        </div>
-
-                        <!-- Login -->
-                        <div class="text-center mt-3">
-                            <small>
-                                Already have an account? 
-                                <a href="login.php"><strong>Log in</strong></a>
+                                <?php echo __('terms_agree'); ?> 
+                                <a href="terms.php"><?php echo __('terms_of_use'); ?></a> <?php echo __('and'); ?> 
+                                <a href="privacy.php"><?php echo __('privacy_policy'); ?></a>.
                             </small>
                         </div>
 

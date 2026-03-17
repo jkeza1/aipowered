@@ -12,7 +12,7 @@
 
                         <!-- Welcome Text -->
                         <h1 class="text-white mb-4">
-                            Welcome
+                            <?php echo __('hero_welcome'); ?>
                         </h1>
 
                         <!-- Search Input -->
@@ -20,15 +20,15 @@
                             <input type="text"
                    id="serviceSearch"
                    class="form-control form-control-lg ps-5"
-                   placeholder="Search for services...">
+                   placeholder="<?php echo __('search_placeholder'); ?>">
 
                             <!-- Search Icon Inside -->
                             <i class="fa fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
                         </div>
 <p id="noResultMessage" class="text-white mt-3" style="display:none;">
-            No service found.
+            <?php echo __('no_service_found'); ?>
         </p>
-                        <h4 class="p-4 text-white" >AI-Powered. Rwanda's trusted goverment portal for instant, secure and accurate document verification</h4>
+                        <h4 class="p-4 text-white"><?php echo __('hero_subtitle'); ?></h4>
 
                     </div>
                 </div>

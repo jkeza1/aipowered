@@ -6,7 +6,7 @@ $row = mysqli_fetch_assoc($resultsysteminfo);
 <section class="ftco-section services-section">
 <div class="container">
 <div class="p-4">
-<h5>Terms of use</h5>
+<h5><?php echo __('terms_title'); ?></h5>
 <p><?php echo nl2br($row['termsofuse']); ?></p>
 </div>
 </div>

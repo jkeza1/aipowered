@@ -9,23 +9,23 @@
 
                         <!-- Title -->
                         <div class="text-center mb-4">
-                            <h4 class="mb-1">Reset Password</h4>
+                            <h4 class="mb-1"><?php echo __('reset_password'); ?></h4>
                             <small class="text-muted">
-                                Please enter your details to continue
+                                <?php echo __('please_enter_details'); ?>
                             </small>
                         </div>
 
 <form action="" method="POST">
 
     <div class="mb-3">
-        <label class="form-label">Email Address *</label>
-        <input type="email" name="email" class="form-control"
-               placeholder="Enter your registered email address" required>
+         <label class="form-label"><?php echo __('email_address'); ?> *</label>
+         <input type="email" name="email" class="form-control"
+             placeholder="<?php echo __('enter_email_reset'); ?>" required>
     </div>
 
     <div class="d-grid">
         <button type="submit" name="resetpassword"
-                class="btn btn-primary">Continue</button>
+                class="btn btn-primary"><?php echo __('continue_btn'); ?></button>
     </div>
 
 </form>
@@ -33,8 +33,8 @@
                         <!-- Back to Login -->
                         <div class="text-center mt-4">
                             <small>
-                                Remember Password? 
-                                <a href="#"><strong>Login</strong></a>
+                                <?php echo __('remember_password'); ?>
+                                <a href="login.php"><strong><?php echo __('login'); ?></strong></a>
                             </small>
                         </div>
 

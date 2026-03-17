@@ -7,18 +7,18 @@
             <div class="col-lg-4 col-sm-6 service-category">
                 <div class="service-item-main pt-3">
                     <div class="p-4">
-                        <h5 class="mb-3 category-title">Replacement of Lost Documents</h5>
+                        <h5 class="mb-3 category-title"><?php echo __('cat_lost_docs'); ?></h5>
 
                         <p class="service-link">
-                            <a href="applicationnationalid.php">Replacement of National ID Card</a>
+                            <a href="applicationnationalid.php"><?php echo __('svc_replace_nid'); ?></a>
                         </p>
 
                         <p class="service-link">
-                            <a href="applicationdrivingreplacement.php">Replacement of Driving License</a>
+                            <a href="applicationdrivingreplacement.php"><?php echo __('svc_replace_driving'); ?></a>
                         </p>
 
                         <p class="service-link">
-                            <a href="applicationpassportreplacement.php">Replacement of Passport</a>
+                            <a href="applicationpassportreplacement.php"><?php echo __('svc_replace_passport'); ?></a>
                         </p>
                     </div>
                 </div>
@@ -28,22 +28,22 @@
             <div class="col-lg-4 col-sm-6 service-category">
                 <div class="service-item-main pt-3">
                     <div class="p-4">
-                        <h5 class="mb-3 category-title">Legal and Notary Services</h5>
+                        <h5 class="mb-3 category-title"><?php echo __('cat_legal'); ?></h5>
 
                         <p class="service-link">
-                            <a href="applicationacademictranscript.php">Academic Transcript</a>
+                            <a href="applicationacademictranscript.php"><?php echo __('svc_academic'); ?></a>
                         </p>
 
                    
 
                         <p class="service-link">
-                            <a href="applicationemploymentcontract.php">Employment Contract</a>
+                            <a href="applicationemploymentcontract.php"><?php echo __('svc_employment_contract'); ?></a>
                         </p>
 
                       
 
                         <p class="service-link">
-                            <a href="applicationnotarialact.php">Notarial Act Authentication</a>
+                            <a href="applicationnotarialact.php"><?php echo __('svc_notarial'); ?></a>
                         </p>
 
                      
@@ -55,18 +55,18 @@
             <div class="col-lg-4 col-sm-6 service-category">
                 <div class="service-item-main pt-3">
                     <div class="p-4">
-                        <h5 class="mb-3 category-title">Issuance of New Certificates</h5>
+                        <h5 class="mb-3 category-title"><?php echo __('cat_certificates'); ?></h5>
 
                         <p class="service-link">
-                            <a href="applicationmarriagecertificate.php">Marriage Certificate</a>
+                            <a href="applicationmarriagecertificate.php"><?php echo __('svc_marriage'); ?></a>
                         </p>
 
                   <p class="service-link">
-                            <a href="applicationcertificateofcelibacy.php">Certificate of Being Single</a>
+                            <a href="applicationcertificateofcelibacy.php"><?php echo __('svc_celibacy'); ?></a>
                         </p>
 
                         <p class="service-link">
-                            <a href="applicationgoodconduct.php">Certificate of Good Conduct</a>
+                            <a href="applicationgoodconduct.php"><?php echo __('svc_good_conduct'); ?></a>
                         </p>
                     </div>
                 </div>
@@ -77,18 +77,18 @@
              <div class="col-lg-4 col-sm-6 service-category">
                 <div class="service-item-main pt-3">
                     <div class="p-4">
-                        <h5 class="mb-3 category-title">Application and Request Services</h5>
+                        <h5 class="mb-3 category-title"><?php echo __('cat_application'); ?></h5>
 
                         <p class="service-link">
-                            <a href="applicationprovisionallicense.php">Application for Provisional Driving License</a>
+                            <a href="applicationprovisionallicense.php"><?php echo __('svc_provisional'); ?></a>
                         </p>
 
                         <p class="service-link">
-                            <a href="applicationdrivinglicense.php">Application for Definitive Driving License</a>
+                            <a href="applicationdrivinglicense.php"><?php echo __('svc_definitive'); ?></a>
                         </p>
 
                         <p class="service-link">
-                            <a href="applicationpassport.php">Application for New Passport</a>
+                            <a href="applicationpassport.php"><?php echo __('svc_passport'); ?></a>
                         </p>
                     </div>
                 </div>
@@ -102,19 +102,19 @@
             <div class="col-lg-4 col-sm-6 service-category">
                 <div class="service-item-main pt-3">
                     <div class="p-4">
-                        <h5 class="mb-3 category-title">Financial and Judicial Documents</h5>
+                        <h5 class="mb-3 category-title"><?php echo __('cat_financial'); ?></h5>
 
                         <p class="service-link">
-                            <a href="applicationsalarycertificate.php">Salary Certificate</a>
+                            <a href="applicationsalarycertificate.php"><?php echo __('svc_salary'); ?></a>
                         </p>
 
                         <p class="service-link">
-                            <a href="applicationcourtjudgment.php">Copy of Court Judgment</a>
+                            <a href="applicationcourtjudgment.php"><?php echo __('svc_court'); ?></a>
                         </p>
 
                         
                         <p class="service-link">
-                            <a href="applicationbankstatement.php">Bank Statement</a>
+                            <a href="applicationbankstatement.php"><?php echo __('svc_bank'); ?></a>
                         </p>
 
 
@@ -127,20 +127,20 @@
             <div class="col-lg-4 col-sm-6 service-category">
                 <div class="service-item-main pt-3">
                     <div class="p-4">
-                        <h5 class="mb-3 category-title">Employment and Legal Records</h5>
+                        <h5 class="mb-3 category-title"><?php echo __('cat_criminal'); ?></h5>
 
                         <p class="service-link">
-                            <a href="applicationemploymentcontract.php">Employment Contract</a>
+                            <a href="applicationemploymentcontract.php"><?php echo __('svc_employment_contract'); ?></a>
                         </p>
 
                         <p class="service-link">
-                            <a href="applicationcriminalrecord.php">Criminal Record Clearance</a>
+                            <a href="applicationcriminalrecord.php"><?php echo __('svc_criminal_record'); ?></a>
                         </p>
 
                        
 
                         <p class="service-link">
-                            <a href="applicationpowerofattorney.php">Power of Attorney</a>
+                            <a href="applicationpowerofattorney.php"><?php echo __('svc_power_attorney'); ?></a>
                         </p>
                     </div>
                 </div>

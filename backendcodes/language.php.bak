@@ -5,17 +5,15 @@ function __($key) {
     if(isset($_GET['lang']) && in_array($_GET['lang'], $allowed_langs)){
         $_SESSION['lang'] = $_GET['lang'];
     }
+    
     if(!isset($_SESSION['lang'])) {
         $_SESSION['lang'] = 'en';
     }
     $lang = $_SESSION['lang'];
-
+    
     $dictionary = [
-        // ==========================
-        // ENGLISH
-        // ==========================
         'en' => [
-            // Navbar / Meta
+            // Meta / navbar
             'home' => 'Home',
             'login' => 'Login',
             'signup' => 'Sign Up',
@@ -64,7 +62,7 @@ function __($key) {
             'svc_criminal_record' => 'Criminal Record Certificate',
             'svc_court_judgment' => 'Court Judgment',
 
-            // Login page
+            // Login
             'irembo_account' => 'IremboAccount',
             'sign_in_with' => 'Sign in with IremboAccount',
             'please_enter_details' => 'Please enter your details to continue',
@@ -75,7 +73,7 @@ function __($key) {
             'create_account' => 'Create Account',
             'login_agree' => 'By logging in, you agree to our',
 
-            // Signup page
+            // Signup
             'create_irembo_account' => 'Create IremboAccount',
             'signup_with_irembo_account' => 'Sign up with IremboAccount',
             'full_name' => 'Full Name',
@@ -183,11 +181,11 @@ function __($key) {
             'follow_us' => 'Follow us on:',
             'system_status' => 'System Status',
 
-            // Terms / Privacy
+            // Terms / Privacy section headers
             'terms_title' => 'Terms of Use',
             'privacy_title' => 'Privacy Policy',
 
-            // Service translation keys used in dashboard queries
+            // Services (translation keys used in dashboard)
             'replacement_of_national_id_card' => 'Replacement of National ID',
             'replacement_of_driving_license' => 'Replacement of Driving License',
             'replacement_of_passport' => 'Replacement of Passport',
@@ -209,12 +207,102 @@ function __($key) {
             'property_ownership' => 'Property Ownership',
             'certificate_of_celibacy' => 'Certificate of Celibacy',
         ],
+            'signup_with_irembo_account' => 'Sign up with IremboAccount',
+            'please_enter_details' => 'Please enter your details to continue',
+            'full_name' => 'Full Name',
+            'enter_full_name' => 'Enter your full name',
+            'gender' => 'Gender',
+            'select_gender' => 'Select Gender',
+            'male' => 'Male',
+            'female' => 'Female',
+            'dob' => 'Date of Birth',
+            'national_id_long' => 'National ID (16 digits)',
+            'enter_national_id' => 'Enter your 16-digit National ID',
+            'phone_number' => 'Phone Number',
+            'enter_phone' => 'Enter phone number (+2507XXXXXXXX)',
+            'email_address' => 'Email Address',
+            'enter_email' => 'Enter your email address',
+            'password' => 'Password',
+            'create_password' => 'Create a password',
+            'confirm_password' => 'Confirm Password',
+            'confirm_your_password' => 'Confirm your password',
+            'already_have_account' => 'Already have an account?',
+            'login_here' => 'Login here',
+            'register' => 'Register',
+            'my_applications' => 'My Applications',
+            'documents' => 'Documents',
+            'data_history' => 'Data Access History',
+            'my_appeals' => 'My Appeals',
+            'app_no' => 'App ID',
+            'service' => 'Service',
+            'status' => 'Status',
+            'fee' => 'Fee',
+            'date' => 'Date',
+            'actions' => 'Actions',
+            'appeal' => 'Appeal',
+            'pending' => 'Pending',
+            'approved' => 'Approved',
+            'rejected' => 'Rejected',
+            'cancelled' => 'Cancelled',
+            'view' => 'View',
+            'cancel' => 'Cancel',
+            'remind' => 'Remind',
+            'login' => 'Login',
+            'signup' => 'Sign Up',
+            'logout' => 'Log Out',
+            'account' => 'Account',
+            'english' => 'English',
+            'kinyarwanda' => 'Kinyarwanda',
+            'french' => 'French',
+            'language' => 'Language',
+            'applications' => 'Applications',
+            'manage_account' => 'Manage My Irembo Account',
+            'total_pending' => 'Total Pending',
+            'position' => 'Position',
+            'before_you' => 'Before You',
+            
+            // Navbar & UI
+            'topbar_announcement' => '<b>New!</b> The fiscal year 2025/2026 has started. Pay for your family\'s mutuelle coverage',
+            'my_account' => 'My Account',
+            'manage_my_irembo_account' => 'Manage My IremboAccount',
+            'update_profile' => 'Update Profile',
+            'email' => 'Email',
+            'phone' => 'Phone',
+            'password_leave_blank' => 'Password (leave blank to keep current)',
+            'save_changes' => 'Save Changes',
+            'close' => 'Close',
+            'issue_date' => 'Issue Date',
+            'issued_at' => 'Issued At',
+            'download' => 'Download',
+            'terms_agree' => 'By registering, you agree to our',
+            'terms_of_use' => 'Terms of Use',
+            'and' => 'and',
+            'privacy_policy' => 'Privacy Policy',
 
-        // ==========================
-        // KINYARWANDA
-        // ==========================
+            // Services (translation keys used in dashboard)
+            'replacement_of_national_id_card' => 'Replacement of National ID',
+            'replacement_of_driving_license' => 'Replacement of Driving License',
+            'replacement_of_passport' => 'Replacement of Passport',
+            'marriage_certificate_cert' => 'Marriage Certificate',
+            'criminal_record_certificate' => 'Criminal Record Certificate',
+            'certificate_of_good_conduct' => 'Certificate of Good Conduct',
+            'application_for_provisional_driving_license' => 'Provisional Driving License',
+            'application_for_definitive_driving_license' => 'Definitive Driving License',
+            'application_for_new_passport' => 'New Passport Application',
+            'academic_transcript' => 'Academic Transcript',
+            'bank_statement' => 'Bank Statement',
+            'notarial_act' => 'Notarial Act',
+            'power_of_attorney' => 'Power of Attorney',
+            'court_judgment' => 'Court Judgment',
+            'salary_certificate' => 'Salary Certificate',
+            'employment_contract' => 'Employment Contract',
+            'medical_report' => 'Medical Report',
+            'business_license' => 'Business License',
+            'property_ownership' => 'Property Ownership',
+            'certificate_of_celibacy' => 'Certificate of Celibacy',
+        ],
         'rw' => [
-            // Navbar / Meta
+            // Meta / navbar
             'home' => 'Ahabanza',
             'login' => 'Injira',
             'signup' => 'Iyandikishe',
@@ -263,7 +351,7 @@ function __($key) {
             'svc_criminal_record' => 'Icyemezo cy\'Urukiko rwa Ndakuzimu',
             'svc_court_judgment' => 'Icyemezo cy\'Urukiko',
 
-            // Login page
+            // Login
             'irembo_account' => 'Konti ya Irembo',
             'sign_in_with' => 'Injira ukoresheje Konti ya Irembo',
             'please_enter_details' => 'Nyamuneka itange amakuru yawe kugirango ukomeze',
@@ -274,7 +362,7 @@ function __($key) {
             'create_account' => 'Fungura Konti',
             'login_agree' => 'Mu kwinjira, wemeye',
 
-            // Signup page
+            // Signup
             'create_irembo_account' => 'Fungura Konti ya Irembo',
             'signup_with_irembo_account' => 'Iyandikishe kuri Konti ya Irembo',
             'full_name' => 'Amazina Yombi',
@@ -386,7 +474,7 @@ function __($key) {
             'terms_title' => 'Amabwiriza y\'Ikoreshwa',
             'privacy_title' => 'Politiki y\'Ibanga',
 
-            // Service translation keys used in dashboard queries
+            // Services
             'replacement_of_national_id_card' => 'Gusimbuza Indangamuntu',
             'replacement_of_driving_license' => 'Gusimbuza Permi',
             'replacement_of_passport' => 'Gusimbuza Pasiporo',
@@ -408,12 +496,8 @@ function __($key) {
             'property_ownership' => 'Ubutaka bw\'Umuturage',
             'certificate_of_celibacy' => 'Icyemezo cy\'Ubukwe Butarabaho',
         ],
-
-        // ==========================
-        // FRENCH
-        // ==========================
         'fr' => [
-            // Navbar / Meta
+            // Meta / navbar
             'home' => 'Accueil',
             'login' => 'Connexion',
             'signup' => 'S\'inscrire',
@@ -462,7 +546,7 @@ function __($key) {
             'svc_criminal_record' => 'Extrait de Casier Judiciaire',
             'svc_court_judgment' => 'Jugement du Tribunal',
 
-            // Login page
+            // Login
             'irembo_account' => 'Compte Irembo',
             'sign_in_with' => 'Connectez-vous avec votre compte Irembo',
             'please_enter_details' => 'Veuillez entrer vos coordonnées pour continuer',
@@ -473,7 +557,7 @@ function __($key) {
             'create_account' => 'Créer un Compte',
             'login_agree' => 'En vous connectant, vous acceptez nos',
 
-            // Signup page
+            // Signup
             'create_irembo_account' => 'Créer un compte Irembo',
             'signup_with_irembo_account' => 'Inscrivez-vous avec un compte Irembo',
             'full_name' => 'Nom Complet',
@@ -540,7 +624,7 @@ function __($key) {
             'app_no_label' => 'N° Demande',
             'service_name_label' => 'Nom du Service',
             'no_applications' => 'Aucune demande trouvée',
-            'data_access_log_note' => 'Pour votre sécurité, nous enregistrons chaque accès d\'un agent à vos données personnelles.',
+            'data_access_log_note' => 'Pour votre sécurité, nous enregistrons chaque accès d\'un agent à vos données.',
             'data_accessed' => 'Données consultées',
             'time' => 'Heure',
             'viewer_name' => 'Nom du consultant',
@@ -585,7 +669,7 @@ function __($key) {
             'terms_title' => 'Conditions d\'Utilisation',
             'privacy_title' => 'Politique de Confidentialité',
 
-            // Service translation keys used in dashboard queries
+            // Services
             'replacement_of_national_id_card' => 'Remplacement de la CNI',
             'replacement_of_driving_license' => 'Remplacement du Permis',
             'replacement_of_passport' => 'Remplacement du Passeport',
@@ -606,7 +690,179 @@ function __($key) {
             'business_license' => 'Licence Commerciale',
             'property_ownership' => 'Titre de Propriété',
             'certificate_of_celibacy' => 'Certificat de Célibat',
+        ]
+    ];
+            'documents' => 'Inyandiko',
+            'data_history' => 'Amateka y\'ikoreshwa',
+            'my_appeals' => 'Ubujurire bwanjye',
+            'app_no' => 'Inomero',
+            'service' => 'Serivisi',
+            'status' => 'Imiterere',
+            'fee' => 'Amafaranga',
+            'date' => 'Itariki',
+            'actions' => 'Ibikorerwa',
+            'appeal' => 'Ajurira',
+            'pending' => 'Irangereje',
+            'approved' => 'Byemejwe',
+            'rejected' => 'Byanze',
+            'cancelled' => 'Byahagaritswe',
+            'view' => 'Reba',
+            'cancel' => 'Hagarika',
+            'remind' => 'Kwibutsa',
+            'login' => 'Injira',
+            'signup' => 'Iyandikishe',
+            'logout' => 'Sohoka',
+            'account' => 'Konti',
+            'english' => 'Icyongereza',
+            'kinyarwanda' => 'Kinyarwanda',
+            'french' => 'Igifaransa',
+            'language' => 'Ururimi',
+            'applications' => 'Saba Serivisi',
+            'manage_account' => 'Cunga Konti ywanjye ya Irembo',
+            'total_pending' => 'Zose ziri gutegerezwa',
+            'position' => 'Umwanya',
+            'before_you' => 'Abiri mbere yawe',
+            
+            // Services
+            'replacement_of_national_id_card' => 'Gusimbuza Indangamuntu',
+            'replacement_of_driving_license' => 'Gusimbuza Permi',
+            'replacement_of_passport' => 'Gusimbuza Pasiporo',
+            'marriage_certificate_cert' => 'Icyemezo cy\'Ishyingirwa',
+            'criminal_record_certificate' => 'Icyemezo cy\'Urukiko',
+            'certificate_of_good_conduct' => 'Icyemezo cy\'Imyitwarire Myiza',
+            'application_for_provisional_driving_license' => 'Guharanira Permi y\'agateganyo',
+            'application_for_definitive_driving_license' => 'Guharanira Permi ya burundu',
+            'application_for_new_passport' => 'Gusaba Pasiporo nshya',
+
+            // Navbar & UI
+            'topbar_announcement' => '<b>Amakuru mashya!</b> Umwaka w\'ingengo y\'imari 2025/2026 utangiye. Wishyura mutuelle y\'umuryango wawe',
+            'my_account' => 'Konti yanjye',
+            'manage_my_irembo_account' => 'Cunga Konti yanjye ya Irembo',
+            'update_profile' => 'Hindura Profili',
+            'email' => 'Imeyili',
+            'phone' => 'Telefone',
+            'password_leave_blank' => 'Ijambo ry\'ibanga (Siga ubusa niba udahindura)',
+            'save_changes' => 'Zachura Impinduka',
+            'close' => 'Funga',
+            'issue_date' => 'Itariki yo Gutangwa',
+            'issued_at' => 'Aho Yatangiwe',
+            'download' => 'Manura',
+            'terms_agree' => 'Mu kwiyandikisha, wemeye',
+            'terms_of_use' => 'Amabwiriza y\'Ikoreshwa',
+            'and' => 'na',
+            'privacy_policy' => 'Politiki y\'Ibanga',
+
+            'home' => 'Ahabanza',
+            'create_irembo_account' => 'Fungura Konti ya Irembo',
+            'signup_with_irembo_account' => 'Iyandikishe kuri Konti ya Irembo',
+            'please_enter_details' => 'Nyamuneka itange amakuru yawe kugirango ukomeze',
+            'full_name' => 'Amazina Yombi',
+            'enter_full_name' => 'Andika amazina yawe yombi',
+            'gender' => 'Igitsina',
+            'select_gender' => 'Hitamo Igitsina',
+            'male' => 'Gabo',
+            'female' => 'Gore',
+            'dob' => 'Itariki y\'amavuko',
+            'national_id_long' => 'Indangamuntu (Imibare 16)',
+            'enter_national_id' => 'Andika imibare 16 y\'indangamuntu yawe',
+            'phone_number' => 'Inomero ya Telefone',
+            'enter_phone' => 'Andika inomero ya telefone (+2507XXXXXXXX)',
+            'email_address' => 'Andika Imevubaye',
+            'enter_email' => 'Andika imeyili yawe',
+            'password' => 'Ijambo ry\'ibanga',
+            'create_password' => 'Gira ijambo ry\'ibanga',
+            'confirm_password' => 'Subiramo ijambo ry\'ibanga',
+            'confirm_your_password' => 'Subiramo ijambo ry\'ibanga ryawe',
+            'already_have_account' => 'Ufite konti umaze?',
+            'login_here' => 'Injira hano',
+            'register' => 'Iyandikishe'
         ],
+        'fr' => [
+            'home' => 'Accueil',
+            'create_irembo_account' => 'Créer un compte Irembo',
+            'signup_with_irembo_account' => 'Inscrivez-vous avec un compte Irembo',
+            'please_enter_details' => 'Veuillez entrer vos coordonnées pour continuer',
+            'full_name' => 'Nom Complet',
+            'enter_full_name' => 'Entrez votre nom complet',
+            'gender' => 'Genre',
+            'select_gender' => 'Sélect. le genre',
+            'male' => 'Masculin',
+            'female' => 'Féminin',
+            'dob' => 'Date de Naissance',
+            'national_id_long' => 'ID National (16 chiffres)',
+            'enter_national_id' => 'Entrez votre ID National à 16 chiffres',
+            'phone_number' => 'Numéro de Téléphone',
+            'enter_phone' => 'Entrez le numéro de téléphone (+2507XXXXXXXX)',
+            'email_address' => 'Adresse E-mail',
+            'enter_email' => 'Entrez votre adresse e-mail',
+            'password' => 'Mot de passe',
+            'create_password' => 'Créez un mot de passe',
+            'confirm_password' => 'Confirmez le mot de passe',
+            'confirm_your_password' => 'Confirmez votre mot de passe',
+            'already_have_account' => 'Vous avez déjà un compte ?',
+            'login_here' => 'Connectez-vous ici',
+            'register' => 'S\'inscrire',
+            'my_applications' => 'Mes Demandes',
+            'documents' => 'Documents',
+            'data_history' => 'Historique d\'Accès',
+            'my_appeals' => 'Mes Recours',
+            'app_no' => 'N° Demande',
+            'service' => 'Service',
+            'status' => 'Statut',
+            'fee' => 'Frais',
+            'date' => 'Date',
+            'actions' => 'Actions',
+            'appeal' => 'Recours',
+            'pending' => 'En attente',
+            'approved' => 'Approuvé',
+            'rejected' => 'Rejeté',
+            'cancelled' => 'Annulé',
+            'view' => 'Voir',
+            'cancel' => 'Annuler',
+            'remind' => 'Rappeler',
+            'login' => 'Connexion',
+            'signup' => 'S\'inscrire',
+            'logout' => 'Déconnexion',
+            'account' => 'Compte',
+            'english' => 'Anglais',
+            'kinyarwanda' => 'Kinyarwanda',
+            'french' => 'Français',
+            'language' => 'Langue',
+            'applications' => 'Demandes',
+            'manage_account' => 'Gérer mon compte Irembo',
+            'total_pending' => 'Total En attente',
+            'position' => 'Position',
+            'before_you' => 'Avant vous',
+
+            // Navbar & UI
+            'topbar_announcement' => '<b>Nouveau !</b> L\'exercice fiscal 2025/2026 a commencé. Payez la couverture mutuelle de votre famille',
+            'my_account' => 'Mon Compte',
+            'manage_my_irembo_account' => 'Gérer mon compte Irembo',
+            'update_profile' => 'Mettre à jour le profil',
+            'email' => 'E-mail',
+            'phone' => 'Téléphone',
+            'password_leave_blank' => 'Mot de passe (laisser vide pour conserver)',
+            'save_changes' => 'Enregistrer',
+            'close' => 'Fermer',
+            'issue_date' => 'Date d\'émission',
+            'issued_at' => 'Émis à',
+            'download' => 'Télécharger',
+            'terms_agree' => 'En vous inscrivant, vous acceptez nos',
+            'terms_of_use' => 'Conditions d\'Utilisation',
+            'and' => 'et',
+            'privacy_policy' => 'Politique de Confidentialité',
+
+            // Services
+            'replacement_of_national_id_card' => 'Remplacement de la CNI',
+            'replacement_of_driving_license' => 'Remplacement du Permis',
+            'replacement_of_passport' => 'Remplacement du Passeport',
+            'marriage_certificate_cert' => 'Certificat de Mariage',
+            'criminal_record_certificate' => 'Extrait de Casier Judiciaire',
+            'certificate_of_good_conduct' => 'Certificat de Bonne Vie et Mœurs',
+            'application_for_provisional_driving_license' => 'Permis de Conduire Provisoire',
+            'application_for_definitive_driving_license' => 'Permis de Conduire Définitif',
+            'application_for_new_passport' => 'Nouvelle Demande de Passeport'
+        ]
     ];
 
     return $dictionary[$lang][$key] ?? $key;
