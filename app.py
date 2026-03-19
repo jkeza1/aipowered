@@ -2,6 +2,7 @@ from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.staticfiles import StaticFiles
 import tensorflow as tf
 import numpy as np
+import re
 from PIL import Image
 import io
 import os
@@ -9,7 +10,6 @@ import tempfile
 import cv2  # Ensure you ran: pip install opencv-python
 import pytesseract
 from difflib import SequenceMatcher
-import re
 import mysql.connector
 import piexif
 from PIL import Image, ImageChops
@@ -329,9 +329,9 @@ def run_ocr_forensics(image_np, expected_name, expected_id, expected_type):
 @app.post("/verify")
 async def verify_document(
     file: UploadFile = File(...), 
-    expected_name: str = None, 
-    expected_id: str = None,
-    expected_type: str = None
+    expected_name: str = Form(None), 
+    expected_id: str = Form(None),
+    expected_type: str = Form(None)
 ):
     try:
         contents = await file.read()
