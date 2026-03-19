@@ -23,6 +23,64 @@ include 'sectionincludes/allapplications.php';
 include 'sectionincludes/jslink.php';
 ?>
 <script>
+function toSafeFormId(appType, appId) {
+    const cleanType = (appType || '').replace(/[^a-zA-Z0-9]/g, '');
+    return cleanType + String(appId || '');
+}
+
+function getAppealTargetFromQuery() {
+    const params = new URLSearchParams(window.location.search);
+    const appId = params.get('app_id');
+    const appType = params.get('app_type');
+    if (!appId || !appType) return null;
+    return toSafeFormId(appType, appId);
+}
+
+function getStatusFilterFromQuery() {
+    const params = new URLSearchParams(window.location.search);
+    const raw = (params.get('status') || '').trim().toLowerCase();
+    const allowed = new Set(['pending', 'approved', 'rejected', 'denied', 'cancelled', 'declined']);
+    return allowed.has(raw) ? raw : null;
+}
+
+function applyStatusFilter(statusFilter) {
+    if (!statusFilter) return;
+
+    const table = document.querySelector('table.table');
+    if (!table) return;
+
+    let visibleCount = 0;
+    const mainRows = table.querySelectorAll('tbody > tr[id^="app-"]');
+
+    mainRows.forEach((row) => {
+        const rowStatus = (row.dataset.status || '').trim().toLowerCase();
+        const isMatch = statusFilter === 'declined'
+            ? (rowStatus === 'rejected' || rowStatus === 'denied')
+            : rowStatus === statusFilter;
+
+        row.style.display = isMatch ? '' : 'none';
+
+        const detailRowId = 'form-' + row.id.replace('app-', '');
+        const detailRow = document.getElementById(detailRowId);
+        if (detailRow) {
+            detailRow.style.display = 'none';
+        }
+
+        if (isMatch) visibleCount += 1;
+    });
+
+    const info = document.createElement('div');
+    info.className = 'alert alert-success d-flex justify-content-between align-items-center';
+    info.style.marginTop = '12px';
+    const statusLabel = statusFilter === 'declined' ? 'declined (rejected + denied)' : statusFilter;
+    info.innerHTML = `
+        <span>Showing <strong>${visibleCount}</strong> ${statusLabel} application(s).</span>
+        <a class="btn btn-sm btn-outline-secondary" href="allapplications.php">Clear filter</a>
+    `;
+
+    table.parentNode.insertBefore(info, table);
+}
+
 // Use Event Delegation to ensure clicks are captured even inside Bootstrap Dropdowns
 document.addEventListener('click', function(e) {
     // Debug: console.log("Clicked element:", e.target);
@@ -86,6 +144,17 @@ function scrollToApplication(appId) {
         }
     }, 600);
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const statusFilter = getStatusFilterFromQuery();
+    applyStatusFilter(statusFilter);
+
+    const target = getAppealTargetFromQuery();
+    if (!target) return;
+
+    // Slight delay ensures table rows are present and layout is stable.
+    setTimeout(() => scrollToApplication(target), 150);
+});
 </script>
 </body>
 </html>

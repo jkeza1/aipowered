@@ -437,7 +437,7 @@ ORDER BY application_date DESC
 $status = strtolower($row['status']);
 $formId = safe_id($row['type'], $row['id']);
 ?>
-<tr id="app-<?= $formId; ?>">
+<tr id="app-<?= $formId; ?>" data-status="<?= htmlspecialchars($status); ?>">
 <td><?= $row['id']; ?></td>
 <td><?= $row['type']; ?></td>
 <td><?= $row['application_date']; ?></td>

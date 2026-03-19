@@ -177,8 +177,9 @@ $serviceTypeLabels = [
                 $appealList = mysqli_query($conn, "SELECT * FROM application_appeals WHERE status = 'Pending' ORDER BY created_at DESC LIMIT 5");
                 if (mysqli_num_rows($appealList) > 0):
                     while ($appeal = mysqli_fetch_assoc($appealList)):
+                        $appealTargetUrl = "allapplications.php?app_id=" . urlencode((string)$appeal['application_id']) . "&app_type=" . urlencode((string)$appeal['application_type']);
                 ?>
-                    <a href="allapplications.php" class="dropdown-item p-3 border-bottom rounded mb-1 bg-light-hover">
+                    <a href="<?= $appealTargetUrl; ?>" class="dropdown-item p-3 border-bottom rounded mb-1 bg-light-hover">
                         <div class="d-flex justify-content-between align-items-start mb-1">
                             <span class="badge bg-info-subtle text-info border border-info-subtle small"><?= $appeal['application_type'] ?></span>
                             <small class="text-muted" style="font-size: 0.7rem;"><?= date('d M', strtotime($appeal['created_at'])) ?></small>

@@ -5,6 +5,7 @@ import numpy as np
 from PIL import Image
 import io
 import os
+import tempfile
 import cv2  # Ensure you ran: pip install opencv-python
 import pytesseract
 from difflib import SequenceMatcher
@@ -14,16 +15,24 @@ import piexif
 from PIL import Image, ImageChops
 
 # --- CONFIGURE TESSERACT PATH ---
-# Explicitly setting the path for Windows
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+# Prefer env override; keep Windows default as fallback.
+_tesseract_cmd = os.getenv("TESSERACT_CMD")
+if _tesseract_cmd:
+    pytesseract.pytesseract.tesseract_cmd = _tesseract_cmd
+elif os.name == "nt":
+    _default_tesseract = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    if os.path.exists(_default_tesseract):
+        pytesseract.pytesseract.tesseract_cmd = _default_tesseract
 
 # --- DATABASE CONFIG ---
 DB_CONFIG = {
-    "host": "localhost",
-    "user": "root",
-    "password": "",
-    "database": "iremboaipowered"
+    "host": os.getenv("DB_HOST", "localhost"),
+    "user": os.getenv("DB_USER", "root"),
+    "password": os.getenv("DB_PASS", ""),
+    "database": os.getenv("DB_NAME", "iremboaipowered")
 }
+
+PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "http://127.0.0.1:8001")
 
 def check_citizen_record(national_id):
     """Verifies the National ID against the citizenregister table."""
@@ -66,9 +75,11 @@ def run_ela_analysis(image_bytes):
     Areas with higher artifacts/noise often indicate digital modification.
     """
     try:
-        temp_filename = "temp_ela.jpg"
+        temp_filename = None
         # Open original and save at a specific quality
         original = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+        with tempfile.NamedTemporaryFile(suffix=".jpg", delete=False) as tmp:
+            temp_filename = tmp.name
         original.save(temp_filename, "JPEG", quality=90)
         
         # Open resaved and calculate difference
@@ -85,14 +96,16 @@ def run_ela_analysis(image_bytes):
         # We simplify this to a global variance check for this bot
         stat = np.array(diff).std()
         
-        if os.path.exists(temp_filename): os.remove(temp_filename)
+        if temp_filename and os.path.exists(temp_filename):
+            os.remove(temp_filename)
         
         if stat > 10.0: # High ELA variance threshold
             return False, "ELA Check: Inconsistent compression artifacts detected (Likely edited)"
         
         return True, "ELA clean"
     except Exception as e:
-        if os.path.exists(temp_filename): os.remove(temp_filename)
+        if temp_filename and os.path.exists(temp_filename):
+            os.remove(temp_filename)
         return True, "ELA calculation skipped"
 
 app = FastAPI()
@@ -104,15 +117,41 @@ os.makedirs(HEATMAP_PATH, exist_ok=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # --- CONFIGURATION ---
-WEIGHTS_PATH = r"output/models/auth_check_model_weights.weights.h5"
+WEIGHTS_PATH = os.getenv("MODEL_WEIGHTS_PATH", "output/models/auth_check_model_weights.weights.h5")
 IMG_SIZE = (224, 224)
+AUTHENTIC_LABEL = 1
+TAMPERED_LABEL = 0
+AUTHENTIC_THRESHOLD = 0.45
+
+
+def find_last_conv_layer(model):
+    """Return the last convolution-like layer for Grad-CAM style outputs."""
+    conv_like = (
+        tf.keras.layers.Conv2D,
+        tf.keras.layers.DepthwiseConv2D,
+        tf.keras.layers.SeparableConv2D,
+    )
+    for layer in reversed(model.layers):
+        if isinstance(layer, conv_like):
+            return layer
+    for layer in reversed(model.layers):
+        try:
+            out_shape = layer.output_shape
+        except Exception:
+            continue
+        if isinstance(out_shape, tuple) and len(out_shape) == 4:
+            return layer
+    raise ValueError("No suitable conv-like layer found for heatmap generation")
+
+
+def preprocess_for_effnet(image_rgb_np):
+    """Match EfficientNet preprocessing used during notebook training."""
+    return tf.keras.applications.efficientnet.preprocess_input(image_rgb_np.astype(np.float32))
 
 def build_model_with_xai():
     """Builds model and exposes internal layers for Grad-CAM."""
     base_model = tf.keras.applications.EfficientNetB0(weights=None, include_top=False, input_shape=(*IMG_SIZE, 3))
-    
-    # We target 'top_activation' to see the final feature map before pooling
-    last_conv_layer = base_model.get_layer("top_activation") 
+    last_conv_layer = find_last_conv_layer(base_model)
     
     avg_pool = tf.keras.layers.GlobalAveragePooling2D()(base_model.output)
     max_pool = tf.keras.layers.GlobalMaxPooling2D()(base_model.output)
@@ -302,11 +341,14 @@ async def verify_document(
         img_np = np.array(image)
         original_resized = np.array(image.resize(IMG_SIZE))
         img_array = np.expand_dims(original_resized, axis=0)
+        img_array = preprocess_for_effnet(img_array)
 
         # 1. Digital Tampering (EfficientNet)
         # We increase input resolution for smaller forgery detection
         prediction, last_conv_output = model.predict(img_array)
-        tamp_score = float(prediction[0][0])
+        # Notebook mapping: sigmoid output 1=authentic, 0=tampered.
+        authentic_score = float(prediction[0][0])
+        tampered_score = float(1.0 - authentic_score)
         
         # --- NEW: ADVANCED FORENSIC PASSES ---
         # A. Metadata Pass
@@ -343,12 +385,12 @@ async def verify_document(
         is_identity_valid = ocr_res.get('is_authentic', False)
         
         # INCREASED STRICTNESS FOR FORGERY:
-        # 1. Deep ML score must be high (> 0.45)
+        # 1. Deep ML authentic score must be high (> AUTHENTIC_THRESHOLD)
         # 2. Laplacian variance must not be suspicious (detects "copy-paste" blur)
         # 3. Metadata must be clean (no photoshop signatures)
         # 4. ELA must be consistent (no resave/modification noise)
         # 5. OCR and DB must match perfectly
-        is_forensic_clean = (tamp_score >= 0.45) and (not is_pasted) and is_metadata_clean and is_ela_clean
+        is_forensic_clean = (authentic_score >= AUTHENTIC_THRESHOLD) and (not is_pasted) and is_metadata_clean and is_ela_clean
         is_authentic = is_forensic_clean and is_type_valid and is_identity_valid
         
         # Prepare explanation based on failures
@@ -358,11 +400,11 @@ async def verify_document(
         risk_score = 0
 
         # Risk Calculation
-        if (tamp_score < 0.25 or is_pasted or not is_metadata_clean) and not is_authentic:
+        if (authentic_score < 0.25 or is_pasted or not is_metadata_clean) and not is_authentic:
             traffic_light = "RED"
             status = "Fraudulent"
             risk_score = 100
-        elif (tamp_score < 0.45 or not is_ela_clean or not is_identity_valid or not is_type_valid) and not is_authentic:
+        elif (authentic_score < AUTHENTIC_THRESHOLD or not is_ela_clean or not is_identity_valid or not is_type_valid) and not is_authentic:
             traffic_light = "YELLOW"
             status = "Suspicious"
             risk_score = 50
@@ -371,7 +413,7 @@ async def verify_document(
             explanation = f"Verification successful. Document belongs to {ocr_res['citizen_name']} and forensic integrity (CNN/Metadata/ELA/DB) is confirmed."
         else:
             reasons = []
-            if tamp_score < 0.45: reasons.append("CNN: Manipulation markers detected")
+            if authentic_score < AUTHENTIC_THRESHOLD: reasons.append("CNN: Manipulation markers detected")
             if is_pasted: reasons.append("Inconsistent edge noise (Possible copy-paste)")
             if not is_metadata_clean: reasons.append(meta_msg)
             if not is_ela_clean: reasons.append(ela_msg)
@@ -386,9 +428,11 @@ async def verify_document(
             "traffic_light": traffic_light,
             "risk_score": risk_score,
             "is_authentic": is_authentic,
-            "digital_integrity": round(tamp_score * 100, 2),
+            "authentic_score": round(authentic_score * 100, 2),
+            "tampered_score": round(tampered_score * 100, 2),
+            "digital_integrity": round(authentic_score * 100, 2),
             "ocr_forensics": ocr_res,
-            "heatmap_url": f"http://127.0.0.1:8001/static/heatmaps/{result_filename}",
+            "heatmap_url": f"{PUBLIC_BASE_URL}/static/heatmaps/{result_filename}",
             "explanation": explanation
         }
         
@@ -428,9 +472,10 @@ async def train_model(document_type: str = Form(...)):
         if len(images) < 2:
             return {"success": False, "error": "Not enough verified documents to start training (minimum 2 required)."}
 
-        X_train = np.array(images) / 255.0
-        # Since these are 'verified' authentic documents, label them as 1
-        y_train = np.ones((len(X_train), 1)) 
+        X_train = np.array(images, dtype=np.float32)
+        X_train = preprocess_for_effnet(X_train)
+        # Since these are 'verified' authentic documents, label them as 1.
+        y_train = np.full((len(X_train), 1), AUTHENTIC_LABEL, dtype=np.float32)
 
         # Perform 3 epochs of Transfer Learning (Fine-Tuning)
         model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001), 
