@@ -64,7 +64,7 @@ Watch the core functionalities (AI Document Analysis, Admin Review, and Automate
 
 You can access the live version or download the package here:
 
-**[🔗 Deployment Link](https://www.infinityfree.com/)**
+**[🔗 Deployment Link](https://aipowered.gamer.gd/index.php)**
 
 ---
 
@@ -140,3 +140,4 @@ The system is designed for high availability and easy reproduction:
 
 ## License
 Created for Irembo AI-POWERED Service.
+
