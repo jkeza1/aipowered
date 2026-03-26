@@ -408,7 +408,19 @@ UNION ALL
 SELECT id, service_name, application_date, status,
 attachment as file1, NULL as file2,
 'Salary Certificate' as type, full_name, national_id
-FROM applicationsalarycertificate
+FROM applicationsalarycertificate UNION ALL
+
+SELECT 
+    id,
+    service_name,
+    'N/A' AS application_date,
+    'Pending' AS status,
+    document_path AS file1,
+    NULL AS file2,
+    'Celibacy Certificate' AS type,
+    full_name,
+    national_id
+FROM applicationcelibacy
 ORDER BY application_date DESC
 ");
 ?>

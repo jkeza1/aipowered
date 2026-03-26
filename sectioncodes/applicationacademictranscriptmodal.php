@@ -4,10 +4,10 @@
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title h4 text-white">New Application: Academic Transcript Verification</h5>
-                <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-5">
-                <form action="backendcodes/sendapplicationacademictranscript.php" method="POST" enctype="multipart/form-data">
+                <form  method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="service_name" value="Equivalence of Foreign Academic Quals">
                     <div class="row">
                         <div class="col-md-12 form-group">

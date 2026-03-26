@@ -14,5 +14,9 @@ include 'backendcodes/sessionstart.php';
 include 'sectioncodes/applicationcertificateofcelibacy.php'; 
 ?>
 <?php include 'sectioncodes/footerlink.php'; ?>
+
+<?php
+include 'backendcodes/sendapplicationcertificateofcelibacy.php';
+?>
 </body>
 </html>

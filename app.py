@@ -210,6 +210,12 @@ def run_ocr_forensics(image_np, expected_name, expected_id, expected_type):
         text_orig = pytesseract.image_to_string(image_np)
         text_proc = pytesseract.image_to_string(processed_img)
         
+        # Print raw OCR outputs for debugging
+        print(f"--- OCR RAW OUTPUT START ---")
+        print(f"text_orig: [{text_orig}]")
+        print(f"text_proc: [{text_proc}]")
+        print(f"--- OCR RAW OUTPUT END ---")
+        
         text = text_orig + " " + text_proc
         clean_text = " ".join(text.lower().split())
         
@@ -287,23 +293,25 @@ def run_ocr_forensics(image_np, expected_name, expected_id, expected_type):
         clean_ocr_numbers = re.sub(r'[^0-9]', '', clean_text)
         print(f"[DEBUG] clean_expected_id: {clean_expected_id}")
         print(f"[DEBUG] clean_ocr_numbers: {clean_ocr_numbers}")
-        # ID is usually more unique, so we check for its presence
-        id_match = clean_expected_id in clean_ocr_numbers if expected_id else False
-        print(f"[DEBUG] id_match: {id_match}")
+        # ID is usually more unique, so we check for its presence in OCR
+        id_in_ocr = clean_expected_id in clean_ocr_numbers if expected_id else False
+        print(f"[DEBUG] id_in_ocr: {id_in_ocr}")
         # 5. INTEGRATED DATABASE VERIFICATION
         db_match = False
         db_name = "Not Found"
-        if id_match:
+        if id_in_ocr:
             citizen = check_citizen_record(clean_expected_id)
             print(f"[DEBUG] citizen DB lookup: {citizen}")
             if citizen:
                 db_match = True
                 db_name = citizen['full_name']
-        
+        # Final ID match is only true if both OCR and DB match
+        id_match = id_in_ocr and db_match
+        print(f"[DEBUG] id_match (OCR+DB): {id_match}")
         # Determine Final Authenticity
         # Condition: OCR Success (Name/ID) AND verified in Citizen DB
         # If DB verification succeeds, we trust the name match more easily
-        is_authentic = (name_score >= 20) and id_match and db_match
+        is_authentic = (name_score >= 20) and id_match
         if barcodes:
              is_authentic = is_authentic and qr_match # If QR exists, it MUST match
 

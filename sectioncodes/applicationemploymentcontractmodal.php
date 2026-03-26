@@ -4,10 +4,10 @@
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title h4 text-white">New Application: Employment Contract Certification</h5>
-                <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-5">
-                <form action="backendcodes/sendapplicationemploymentcontract.php" method="POST" enctype="multipart/form-data">
+                <form  method="POST" enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-md-12 form-group">
                             <label class="font-weight-bold">Full Name (Employee)</label>
@@ -39,3 +39,5 @@
         </div>
     </div>
 </div>
+
+

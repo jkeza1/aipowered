@@ -37,7 +37,7 @@ if(isset($_POST['full_name'])){
     }
 
     $fileName = time().'_salary.'.$ext;
-    $filePath = "adminsection/salaryslip/".$fileName; // Store relative path for DB
+    $filePath = $fileName; // Store relative path for DB
     $destination = $uploadDir.$fileName;
 
     if(!move_uploaded_file($_FILES['document']['tmp_name'], $destination)){

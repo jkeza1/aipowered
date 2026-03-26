@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title h4 text-white">New Application: Salary Certificate Verification</h5>
-                <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-5">
                 <form action="backendcodes/sendapplicationsalarycertificate.php" method="POST" enctype="multipart/form-data">

@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['document'])) {
     $application_date = date("Y-m-d H:i:s");
     $expected_feedback_date = date("Y-m-d H:i:s", strtotime("+7 days"));
     
-    $upload_dir = '../adminsection/contract/';
+    $upload_dir = 'adminsection/employmentcontract/';
     if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
     
     $file_ext = pathinfo($_FILES['document']['name'], PATHINFO_EXTENSION);
@@ -43,10 +43,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['document'])) {
         $verdict = ($forgery_score > 0.5) ? 'High Risk' : 'Authentic';
 
         $sql = "INSERT INTO applicationemploymentcontract (full_name, national_id, email, phone, employer_id, job_title, attachment, service_name, ai_forgery_score, ai_verdict, application_date, expected_feedback_date) 
-                VALUES ('$full_name', '$national_id', '$email', '$phone', '$employer_id', '$job_title', '$target_file', '$service_name', '$forgery_score', '$verdict', '$application_date', '$expected_feedback_date')";
+            VALUES ('$full_name', '$national_id', '$email', '$phone', '$employer_id', '$job_title', '$file_name', '$service_name', '$forgery_score', '$verdict', '$application_date', '$expected_feedback_date')";
 
         if (mysqli_query($conn, $sql)) {
-            header("Location: ../userdashboard.php?msg=Contract submitted for verification.");
+
+
+      echo "<script>
+        swal({
+          title: 'Success!',
+          text: 'Contract submitted for verification.',
+          icon: 'success',
+          button: 'OK'
+        }).then(() => {
+          window.location.href = '';
+        });
+        </script>";
         } else {
             echo "Error: " . mysqli_error($conn);
         }
