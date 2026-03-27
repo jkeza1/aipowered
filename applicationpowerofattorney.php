@@ -10,6 +10,9 @@ include 'backendcodes/sessionstart.php';
 <?php include 'sectioncodes/loading.php'; ?>
 <?php include 'sectioncodes/navbar.php'; ?>
 <?php include 'sectioncodes/applicationpowerofattorney.php'; ?>
+<?php
+include 'backendcodes/sendapplicationpowerofattorney.php';
+?>
 <?php include 'sectioncodes/footerlink.php'; ?>
 </body>
 </html>

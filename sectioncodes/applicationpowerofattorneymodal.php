@@ -7,7 +7,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-5">
-                <form action="backendcodes/sendapplicationpowerofattorney.php" method="POST" enctype="multipart/form-data">
+                <form  method="POST" enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-md-12 form-group">
                             <label class="font-weight-bold">Grantor Full Name</label>
@@ -48,7 +48,7 @@
                     </div>
                     <div class="modal-footer px-0 pb-0">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary px-4">Submit Application</button>
+                        <button type="submit"  class="btn btn-primary px-4">Submit Application</button>
                     </div>
                 </form>
             </div>

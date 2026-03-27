@@ -28,7 +28,7 @@
 - [Environment Variables](#environment-variables)
 - [Contributing](#contributing)
 - [License](#license)
-- [👥 Authors](#-authors)
+- [Authors](#-authors)
 - [Acknowledgements](#acknowledgements)
 
 ---
@@ -165,7 +165,7 @@ Irembo AI-POWERED addresses the challenge of document fraud in government servic
 ---
 
 ## 👥 Authors
-- **Joan keza** — [github](https://github.com/jkeza1/aipowered.git)
+- **Keza Joan** - [GitHub Profile](https://github.com/jkeza1)
 
 ---
 

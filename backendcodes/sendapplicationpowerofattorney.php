@@ -14,12 +14,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['document'])) {
     $application_date = date("Y-m-d H:i:s");
     $expected_feedback_date = date("Y-m-d H:i:s", strtotime("+5 days"));
     
-    $upload_dir = '../adminsection/poa/';
+    $upload_dir = 'adminsection/powerofattorney/';
     if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
     
     $file_ext = pathinfo($_FILES['document']['name'], PATHINFO_EXTENSION);
     $file_name = time() . '_' . $national_id . '.' . $file_ext;
-    $target_file = $upload_dir . $file_name;
+    $target_file = $file_name;
 
     if (move_uploaded_file($_FILES['document']['tmp_name'], $target_file)) {
         // --- AI Forensic Integration ---
