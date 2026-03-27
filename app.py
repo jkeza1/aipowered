@@ -18,7 +18,7 @@ import piexif
 from PIL import ImageChops
 
 # --- CONFIGURE TESSERACT PATH ---
-# Prefer env override; keep Windows default as fallback.
+
 _tesseract_cmd = os.getenv("TESSERACT_CMD")
 if _tesseract_cmd:
     pytesseract.pytesseract.tesseract_cmd = _tesseract_cmd
@@ -38,7 +38,7 @@ DB_CONFIG = {
 PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "http://127.0.0.1:8001")
 CITIZEN_TABLE_PREFERENCE = os.getenv("CITIZEN_TABLE", "citizensregistry").strip()
 
-# Minimal structured logging with env-controlled verbosity.
+
 _log_level = os.getenv("LOG_LEVEL", "INFO").upper()
 logging.basicConfig(
     level=getattr(logging, _log_level, logging.INFO),
@@ -138,8 +138,7 @@ def run_ela_analysis(image_bytes):
         if max_diff == 0:
             max_diff = 1
         
-        # If the difference is too high in localized areas, it's a sign of editing
-        # We simplify this to a global variance check for this bot
+        
         stat = np.array(diff).std()
         
         if temp_filename and os.path.exists(temp_filename):

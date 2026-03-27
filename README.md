@@ -4,7 +4,7 @@
 
 **Automate, verify, and secure government document workflows with advanced AI and robust PHP/Python integration.**
 
-**🚀 [Access the Deployed Application](https://aipowered.gamer.gd/login.php) 🚀**
+** [Access the Deployed Application](https://aipowered.gamer.gd/login.php) **
 
 ![PHP](https://img.shields.io/badge/PHP-8.x-blue?logo=php)
 ![Python](https://img.shields.io/badge/Python-3.10+-yellow?logo=python)
@@ -16,7 +16,7 @@
 
 ---
 
-## 📚 Table of Contents
+## Table of Contents
 - [About](#about)
 - [Live Demo](#live-demo)
 - [Features](#features)
@@ -39,7 +39,7 @@ Irembo AI-POWERED addresses the challenge of document fraud in government servic
 ---
 
 ## Live Demo
-**🚀 [Access the Deployed Application](https://aipowered.gamer.gd/login.php) 🚀**
+** [Access the Deployed Application](https://aipowered.gamer.gd/login.php) **
 
 ---
 
@@ -165,7 +165,7 @@ Irembo AI-POWERED addresses the challenge of document fraud in government servic
 ---
 
 ## 👥 Authors
-- **Your Name** — [@github](https://github.com/yourhandle)
+- **Joan keza** — [@github](https://github.com/jkeza1/aipowered.git)
 
 ---
 
