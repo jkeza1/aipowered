@@ -3,6 +3,9 @@ from fastapi.staticfiles import StaticFiles
 import tensorflow as tf
 import numpy as np
 import re
+import logging
+import time
+import uuid
 from PIL import Image
 import io
 import os
@@ -12,7 +15,7 @@ import pytesseract
 from difflib import SequenceMatcher
 import mysql.connector
 import piexif
-from PIL import Image, ImageChops
+from PIL import ImageChops
 
 # --- CONFIGURE TESSERACT PATH ---
 # Prefer env override; keep Windows default as fallback.
@@ -33,23 +36,66 @@ DB_CONFIG = {
 }
 
 PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "http://127.0.0.1:8001")
+CITIZEN_TABLE_PREFERENCE = os.getenv("CITIZEN_TABLE", "citizensregistry").strip()
 
-def check_citizen_record(national_id):
-    """Verifies the National ID against the citizenregister table."""
+# Minimal structured logging with env-controlled verbosity.
+_log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+logging.basicConfig(
+    level=getattr(logging, _log_level, logging.INFO),
+    format="%(asctime)s %(levelname)s [%(name)s] %(message)s",
+)
+logger = logging.getLogger("irembo-ai")
+
+def check_citizen_record(national_id, request_id=None):
+    """Verifies the National ID against citizen registry tables."""
     try:
-        print(f"[DEBUG] Querying citizenregister for national_id: {national_id}")
+        if not national_id:
+            return None
+
+        req_tag = f"[rid={request_id}] " if request_id else ""
+
         conn = mysql.connector.connect(**DB_CONFIG)
         cursor = conn.cursor(dictionary=True)
-        # We query the citizenregister table which you use for official records
-        query = "SELECT full_name, national_id FROM citizenregister WHERE national_id = %s"
-        cursor.execute(query, (national_id,))
-        record = cursor.fetchone()
-        print(f"[DEBUG] Query result: {record}")
+
+        table_candidates = []
+        for table_name in [CITIZEN_TABLE_PREFERENCE, "citizensregistry", "citizenregister"]:
+            safe_table = re.sub(r"[^a-zA-Z0-9_]", "", str(table_name or ""))
+            if safe_table and safe_table not in table_candidates:
+                table_candidates.append(safe_table)
+
+        record = None
+        for table_name in table_candidates:
+            logger.debug("%sQuerying %s for national_id=%s", req_tag, table_name, national_id)
+            try:
+                query_full_name = f"SELECT full_name, national_id FROM `{table_name}` WHERE national_id = %s LIMIT 1"
+                cursor.execute(query_full_name, (national_id,))
+                record = cursor.fetchone()
+                if record:
+                    logger.debug("%sCitizen match found in %s", req_tag, table_name)
+                    break
+            except mysql.connector.Error as full_name_err:
+                # Fallback for schemas that split name into first_name/last_name.
+                logger.debug("%sPrimary query failed for %s: %s", req_tag, table_name, full_name_err)
+                try:
+                    query_split_name = (
+                        f"SELECT CONCAT_WS(' ', first_name, last_name) AS full_name, national_id "
+                        f"FROM `{table_name}` WHERE national_id = %s LIMIT 1"
+                    )
+                    cursor.execute(query_split_name, (national_id,))
+                    record = cursor.fetchone()
+                    if record:
+                        logger.debug("%sCitizen match found in %s using split name fallback", req_tag, table_name)
+                        break
+                except mysql.connector.Error as split_name_err:
+                    logger.debug("%s%s lookup failed: %s", req_tag, table_name, split_name_err)
+                    continue
+
+        logger.debug("%sCitizen query result=%s", req_tag, bool(record))
         cursor.close()
         conn.close()
         return record
     except Exception as e:
-        print(f"Database Error: {e}")
+        logger.exception("DB error during citizen lookup: %s", e)
         return None
 
 def run_metadata_forensics(image_bytes):
@@ -171,25 +217,62 @@ def build_model_with_xai():
 model = build_model_with_xai()
 if os.path.exists(WEIGHTS_PATH):
     model.load_weights(WEIGHTS_PATH)
-    print("✅ Weights loaded successfully.")
+    logger.info("Model weights loaded from %s", WEIGHTS_PATH)
 else:
-    print(f"❌ Weights not found at {WEIGHTS_PATH}")
+    logger.warning("Model weights not found at %s", WEIGHTS_PATH)
 
 @app.get("/")
 async def root():
     return {"message": "Irembo AI Document Verification API is running. Use POST /verify to analyze documents."}
 
-import re
-
-# Add this to the top imports
-import cv2  # Should already be there
 from pyzbar import pyzbar # Add this: pip install pyzbar
 
-def run_ocr_forensics(image_np, expected_name, expected_id, expected_type):
+OCR_ID_CONFUSION_MAP = {
+    "O": "0", "o": "0", "D": "0", "Q": "0", "¢": "0", "€": "0",
+    "I": "1", "l": "1", "|": "1", "!": "1", "i": "1",
+    "Z": "2", "z": "2",
+    "S": "5", "s": "5", "$": "5",
+    "B": "8", "b": "8",
+}
+
+
+def normalize_ocr_id_digits(text):
+    """Normalize common OCR confusions and keep digits only for ID matching."""
+    normalized = "".join(OCR_ID_CONFUSION_MAP.get(ch, ch) for ch in str(text))
+    return re.sub(r"[^0-9]", "", normalized)
+
+
+def one_digit_off(candidate, expected):
+    """Allow at most one wrong digit for same-length OCR candidates."""
+    if not candidate or not expected or len(candidate) != len(expected):
+        return False
+    mismatches = sum(a != b for a, b in zip(candidate, expected))
+    return mismatches == 1
+
+
+def extract_id_candidates(text, expected_len):
+    """Extract likely ID tokens and normalize them to digits."""
+    if expected_len <= 0:
+        return []
+
+    candidates = set()
+    # Token-level extraction keeps candidates bounded to avoid cross-line concatenation noise.
+    for token in re.findall(r"[A-Za-z0-9¢€$|!]{6,}", str(text)):
+        digits = normalize_ocr_id_digits(token)
+        if len(digits) >= expected_len - 1:
+            candidates.add(digits)
+            if len(digits) > expected_len:
+                for i in range(0, len(digits) - expected_len + 1):
+                    candidates.add(digits[i:i + expected_len])
+
+    return list(candidates)
+
+def run_ocr_forensics(image_np, expected_name, expected_id, expected_type, request_id=None):
     """
     Combines OCR extraction, QR Code Decoding, and Database Matching.
     """
     try:
+        req_tag = f"[rid={request_id}] " if request_id else ""
         # 1. Decode QR Code (Unfakable signature)
         qr_data = "None"
         qr_match = False
@@ -207,24 +290,24 @@ def run_ocr_forensics(image_np, expected_name, expected_id, expected_type):
         processed_img = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
         
         # Try OCR on both original and processed image
-        text_orig = pytesseract.image_to_string(image_np)
-        text_proc = pytesseract.image_to_string(processed_img)
+        ocr_config = "--oem 3 --psm 6"
+        text_orig = pytesseract.image_to_string(image_np, config=ocr_config)
+        text_proc = pytesseract.image_to_string(processed_img, config=ocr_config)
         
-        # Print raw OCR outputs for debugging
-        print(f"--- OCR RAW OUTPUT START ---")
-        print(f"text_orig: [{text_orig}]")
-        print(f"text_proc: [{text_proc}]")
-        print(f"--- OCR RAW OUTPUT END ---")
+        logger.debug("%sOCR text_orig=%s", req_tag, text_orig)
+        logger.debug("%sOCR text_proc=%s", req_tag, text_proc)
         
         text = text_orig + " " + text_proc
         clean_text = " ".join(text.lower().split())
         
-        # DEBUG: Print exact OCR output to console for troubleshooting
-        print(f"--- OCR DEBUG START ---")
-        print(f"OCR TEXT DETECTED: [{clean_text}]")
-        print(f"EXPECTED NAME: [{expected_name}]")
-        print(f"EXPECTED ID: [{expected_id}]")
-        print(f"--- OCR DEBUG END ---")
+        logger.debug(
+            "%sOCR normalized text=%s | expected_name=%s | expected_id=%s | expected_type=%s",
+            req_tag,
+            clean_text,
+            expected_name,
+            expected_id,
+            expected_type,
+        )
         
         # 3. Document Type Classification
         doc_type_detected = "unknown"
@@ -290,24 +373,45 @@ def run_ocr_forensics(image_np, expected_name, expected_id, expected_type):
 
         # Match ID (Strip everything except numbers)
         clean_expected_id = re.sub(r'[^0-9]', '', str(expected_id))
-        clean_ocr_numbers = re.sub(r'[^0-9]', '', clean_text)
-        print(f"[DEBUG] clean_expected_id: {clean_expected_id}")
-        print(f"[DEBUG] clean_ocr_numbers: {clean_ocr_numbers}")
-        # ID is usually more unique, so we check for its presence in OCR
-        id_in_ocr = clean_expected_id in clean_ocr_numbers if expected_id else False
-        print(f"[DEBUG] id_in_ocr: {id_in_ocr}")
+        expected_len = len(clean_expected_id)
+        id_candidates = extract_id_candidates(clean_text, expected_len) if expected_len else []
+        clean_ocr_numbers = " ".join(sorted(set(id_candidates)))
+        logger.debug("%sclean_expected_id=%s", req_tag, clean_expected_id)
+        logger.debug("%sclean_ocr_numbers=%s", req_tag, clean_ocr_numbers)
+        logger.debug("%sid_candidates=%s", req_tag, id_candidates)
+        # ID is usually unique, so we first try exact matching after OCR normalization.
+        id_in_ocr = clean_expected_id in id_candidates if clean_expected_id else False
+
+        # Strict fallback: accept if OCR produced same length and only one digit differs.
+        relaxed_candidate = None
+        if not id_in_ocr and clean_expected_id:
+            best_ratio = 0.0
+            for candidate in id_candidates:
+                if len(candidate) != expected_len:
+                    continue
+                ratio = SequenceMatcher(None, candidate, clean_expected_id).ratio()
+                best_ratio = max(best_ratio, ratio)
+                if one_digit_off(candidate, clean_expected_id):
+                    relaxed_candidate = candidate
+                    id_in_ocr = True
+                    break
+            logger.debug("%sbest_id_similarity=%s", req_tag, round(best_ratio, 4))
+            if relaxed_candidate:
+                logger.debug("%srelaxed_id_candidate_used=%s", req_tag, relaxed_candidate)
+
+        logger.debug("%sid_in_ocr=%s", req_tag, id_in_ocr)
         # 5. INTEGRATED DATABASE VERIFICATION
         db_match = False
         db_name = "Not Found"
         if id_in_ocr:
-            citizen = check_citizen_record(clean_expected_id)
-            print(f"[DEBUG] citizen DB lookup: {citizen}")
+            citizen = check_citizen_record(clean_expected_id, request_id=request_id)
+            logger.debug("%scitizen_db_lookup=%s", req_tag, bool(citizen))
             if citizen:
                 db_match = True
                 db_name = citizen['full_name']
         # Final ID match is only true if both OCR and DB match
         id_match = id_in_ocr and db_match
-        print(f"[DEBUG] id_match (OCR+DB): {id_match}")
+        logger.debug("%sid_match_ocr_db=%s", req_tag, id_match)
         # Determine Final Authenticity
         # Condition: OCR Success (Name/ID) AND verified in Citizen DB
         # If DB verification succeeds, we trust the name match more easily
@@ -327,7 +431,7 @@ def run_ocr_forensics(image_np, expected_name, expected_id, expected_type):
             "anomalies": ["None"] if is_authentic else ["Data Mismatch: Identity could not be verified in citizen database"]
         }
     except Exception as e:
-        print(f"OCR Error: {e}")
+        logger.exception("OCR pipeline error: %s", e)
         return {
             "type_match": False,
             "doc_type_detected": "Error",
@@ -344,7 +448,18 @@ async def verify_document(
     expected_type: str = Form(None)
 ):
     try:
+        request_id = uuid.uuid4().hex[:8]
+        started_at = time.perf_counter()
+
         contents = await file.read()
+        logger.info(
+            "[rid=%s] /verify start filename=%s expected_id=%s expected_type=%s bytes=%s",
+            request_id,
+            file.filename,
+            expected_id,
+            expected_type,
+            len(contents),
+        )
         image = Image.open(io.BytesIO(contents)).convert('RGB')
         
         # Preprocess
@@ -374,7 +489,7 @@ async def verify_document(
         is_pasted = laplacian_var < 100 # Low variance can indicate smooth digitally generated text/shapes
         
         # 2. OCR Forensics
-        ocr_res = run_ocr_forensics(img_np, expected_name, expected_id, expected_type)
+        ocr_res = run_ocr_forensics(img_np, expected_name, expected_id, expected_type, request_id=request_id)
         
         # 3. Heatmap
         heatmap = np.mean(last_conv_output[0], axis=-1)
@@ -392,7 +507,7 @@ async def verify_document(
 
         # Logic for Overall Verdict
         is_type_valid = ocr_res.get('type_match', True)
-        is_identity_valid = ocr_res.get('is_authentic', False)
+        is_identity_valid = ocr_res.get('is_authentic', True)
         
         # INCREASED STRICTNESS FOR FORGERY:
         # 1. Deep ML authentic score must be high (> AUTHENTIC_THRESHOLD)
@@ -432,6 +547,18 @@ async def verify_document(
                 reasons.append("NLP: Identity could not be cross-referenced in official registry")
             explanation = "FAILED: " + ", ".join(reasons)
 
+        logger.info(
+            "[rid=%s] /verify done status=%s traffic=%s is_authentic=%s auth_score=%.2f id_match=%s type_match=%s elapsed_ms=%.1f",
+            request_id,
+            status,
+            traffic_light,
+            is_authentic,
+            authentic_score,
+            ocr_res.get('id_match'),
+            ocr_res.get('type_match'),
+            (time.perf_counter() - started_at) * 1000,
+        )
+
         return {
             "success": True,
             "status": status,
@@ -448,6 +575,7 @@ async def verify_document(
         
 
     except Exception as e:
+        logger.exception("/verify failed: %s", e)
         return {"success": False, "error": str(e)}
 
 # --- NEW TRAINING ENDPOINT ---
@@ -458,6 +586,8 @@ async def train_model(document_type: str = Form(...)):
     Example: document_type='nationalid' will train on 'adminsection/nationalid/'
     """
     try:
+        started_at = time.perf_counter()
+        logger.info("/train start document_type=%s", document_type)
         # Map types to folder paths
         folder_map = {
             "nationalid": "adminsection/nationalid/",
@@ -495,6 +625,13 @@ async def train_model(document_type: str = Form(...)):
         
         # Save updated weights
         model.save_weights(WEIGHTS_PATH)
+
+        logger.info(
+            "/train done document_type=%s trained_images=%s elapsed_ms=%.1f",
+            document_type,
+            len(images),
+            (time.perf_counter() - started_at) * 1000,
+        )
         
         return {
             "success": True, 
@@ -503,6 +640,7 @@ async def train_model(document_type: str = Form(...)):
         }
 
     except Exception as e:
+        logger.exception("/train failed for document_type=%s: %s", document_type, e)
         return {"success": False, "error": f"Training failed: {str(e)}"}
 
 if __name__ == "__main__":
