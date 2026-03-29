@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+python-multipart
+tensorflow
+numpy
+pillow
+opencv-python-headless
+pytesseract
+mysql-connector-python
+piexif
+pyzbar
