@@ -45,7 +45,7 @@
             <input type="text" name="wife_national_id" class="form-control" placeholder="Enter wife ID no" required>
           </div>
 
-          <div class="form-group">
+          <div class="form-tgroup">
             <label>Applicant Email</label>
             <input type="email" name="applicant_email" class="form-control" placeholder="Enter Applicant email" required>
           </div>
