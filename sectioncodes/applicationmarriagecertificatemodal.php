@@ -3,19 +3,10 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <form method="POST" enctype="multipart/form-data">
-          <div class="form-group">
-            <label>Applicant Phone</label>
-            <input type="text" name="applicant_phone" class="form-control" placeholder="Enter Applicant phone" required>
-          </div>
-
-          <div class="form-group">
-            <label>Upload Supporting Document (PDF/JPG/PNG)</label>
-            <input type="file" name="marriage_doc" class="form-control" accept=".pdf,.jpg,.jpeg,.png" required>
-          </div>
 
         <div class="modal-header">
           <h5 class="modal-title">Apply for Marriage Certificate</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
         <div class="modal-body">
@@ -45,7 +36,7 @@
             <input type="text" name="wife_national_id" class="form-control" placeholder="Enter wife ID no" required>
           </div>
 
-          <div class="form-tgroup">
+          <div class="form-group">
             <label>Applicant Email</label>
             <input type="email" name="applicant_email" class="form-control" placeholder="Enter Applicant email" required>
           </div>
@@ -54,6 +45,7 @@
             <label>Applicant Phone</label>
             <input type="text" name="applicant_phone" class="form-control" placeholder="Enter Applicant phone" required>
           </div>
+  
 
         </div>
 
