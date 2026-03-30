@@ -2,7 +2,16 @@
 <div class="modal fade" id="applyMarriageModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form method="POST">
+      <form method="POST" enctype="multipart/form-data">
+          <div class="form-group">
+            <label>Applicant Phone</label>
+            <input type="text" name="applicant_phone" class="form-control" placeholder="Enter Applicant phone" required>
+          </div>
+
+          <div class="form-group">
+            <label>Upload Supporting Document (PDF/JPG/PNG)</label>
+            <input type="file" name="marriage_doc" class="form-control" accept=".pdf,.jpg,.jpeg,.png" required>
+          </div>
 
         <div class="modal-header">
           <h5 class="modal-title">Apply for Marriage Certificate</h5>

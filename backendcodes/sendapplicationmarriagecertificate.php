@@ -34,6 +34,35 @@ if(isset($_POST['applymarriagecertificate'])) {
     }
 
     // -----------------------------
+    // Handle file upload
+    // -----------------------------
+    $upload_dir = __DIR__ . '/../adminsection/marriagecertificate/';
+    $relative_upload_dir = 'adminsection/marriagecertificate/';
+    if (!is_dir($upload_dir)) {
+        mkdir($upload_dir, 0777, true);
+    }
+    $file_path = '';
+    if (isset($_FILES['marriage_doc']) && $_FILES['marriage_doc']['error'] === UPLOAD_ERR_OK) {
+        $allowed_types = ['application/pdf', 'image/jpeg', 'image/png'];
+        $file_type = mime_content_type($_FILES['marriage_doc']['tmp_name']);
+        if (!in_array($file_type, $allowed_types)) {
+            echo "<script>swal('Upload Error', 'Invalid file type. Only PDF, JPG, PNG allowed.', 'error');</script>";
+            exit;
+        }
+        $file_ext = pathinfo($_FILES['marriage_doc']['name'], PATHINFO_EXTENSION);
+        $file_name = uniqid('marriage_', true) . '.' . $file_ext;
+        $absolute_path = $upload_dir . $file_name;
+        $file_path = $relative_upload_dir . $file_name;
+        if (!move_uploaded_file($_FILES['marriage_doc']['tmp_name'], $absolute_path)) {
+            echo "<script>swal('Upload Error', 'Failed to upload file.', 'error');</script>";
+            exit;
+        }
+    } else {
+        echo "<script>swal('Upload Error', 'No file uploaded or upload failed.', 'error');</script>";
+        exit;
+    }
+
+    // -----------------------------
     // Insert application
     // -----------------------------
     $application_date = date("Y-m-d H:i:s");
@@ -43,16 +72,15 @@ if(isset($_POST['applymarriagecertificate'])) {
         (husband_full_name, wife_full_name, applicant_email, applicant_phone,
          husband_national_id, wife_national_id,
          service_name, processing_time, price, currency,
-         application_date, expected_feedback_date)
+         application_date, expected_feedback_date, document_path)
         VALUES
         ('$husband_full_name','$wife_full_name','$applicant_email','$applicant_phone',
          '$husband_national_id','$wife_national_id',
          '$service_name','$processing_days','$price','$currency',
-         '$application_date','$expected_feedback_date')";
+         '$application_date','$expected_feedback_date','$file_path')";
 
     if(!mysqli_query($conn, $insert_query)){
         echo "<script>swal('Error','Database insertion failed: ".mysqli_error($conn)."','error');</script>";
-  
     }
 
     // -----------------------------
@@ -89,6 +117,8 @@ if(isset($_POST['applymarriagecertificate'])) {
             Processing Time: {$processing_days} day(s)</p>
 
             <p><strong>Expected Feedback Date:</strong> {$expected_feedback_date}</p>
+
+            <p><strong>Uploaded Document:</strong> ".($file_path ? basename($file_path) : 'None')."</p>
 
             <p>Please keep your phone/email accessible for further notifications.</p>
 

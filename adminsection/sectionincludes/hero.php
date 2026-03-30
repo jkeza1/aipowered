@@ -189,9 +189,6 @@ $appealCount = mysqli_num_rows($activeAppeals);
                                     <?php foreach($services as $table => $info): ?>
                                     <div class="service-row">
                                         <div class="service-left">
-                                            <span class="service-icon" style="background: <?= $info['color']; ?>16; color: <?= $info['color']; ?>;">
-                                                <i class="fas <?= $info['icon']; ?>"></i>
-                                            </span>
                                             <div>
                                                 <div class="service-name"><?= $info['label']; ?></div>
                                                 <div class="service-subtext"><?php echo __('documents'); ?></div>
@@ -216,9 +213,9 @@ $appealCount = mysqli_num_rows($activeAppeals);
             <div class="card border-0 shadow-sm h-100 admin-appeals-card">
                 <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="fw-bold mb-0"><?php echo __('admin_citizens_appeals'); ?></h5>
+                        <h5 class="fw-bold mb-0 text-primary"><?php echo __('admin_citizens_appeals'); ?></h5>
                         <?php if($appealCount > 0): ?>
-                            <span class="badge bg-danger rounded-pill px-3 py-2"><?= $appealCount; ?> <?php echo __('admin_new'); ?></span>
+                            <span class="badge bg-primary rounded-pill px-3 py-2" style="color: #fff;"><?= $appealCount; ?> <?php echo __('admin_new'); ?></span>
                         <?php endif; ?>
                     </div>
                 </div>

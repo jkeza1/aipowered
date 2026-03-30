@@ -1,16 +1,17 @@
 FROM php:8.2-apache
 
-# Enable Apache rewrite module (important for routing)
+# Install mysqli + pdo_mysql extensions
+RUN docker-php-ext-install mysqli pdo pdo_mysql
+
+# Enable Apache rewrite module
 RUN a2enmod rewrite
 
-# Copy your PHP project files into Apache web directory
+# Copy project
 COPY . /var/www/html/
 
-# Set proper permissions
+# Permissions
 RUN chown -R www-data:www-data /var/www/html
 
-# Expose web server port
 EXPOSE 80
 
-# Start Apache in foreground
 CMD ["apache2-foreground"]

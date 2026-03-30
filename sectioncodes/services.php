@@ -36,9 +36,6 @@
 
                    
 
-                        <p class="service-link">
-                            <a href="applicationemploymentcontract.php"><?php echo __('svc_employment_contract'); ?></a>
-                        </p>
 
                       
 
@@ -139,9 +136,6 @@
 
                        
 
-                        <p class="service-link">
-                            <a href="applicationpowerofattorney.php"><?php echo __('svc_power_attorney'); ?></a>
-                        </p>
                     </div>
                 </div>
             </div>
